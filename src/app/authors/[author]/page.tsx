@@ -5,11 +5,13 @@ import type { Post } from '@/types';
 import { notFound } from 'next/navigation';
 
 // ✅ 正しいPageProps型
-type PageProps = {
+interface PageProps {
   params: {
     author: string;
   };
-};
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
 
 export default function AuthorPage({ params }: PageProps) {
   const posts: Post[] = getAllPosts();
