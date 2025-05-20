@@ -1,10 +1,10 @@
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
-import type { Post } from '@/types';
 import { notFound } from 'next/navigation';
+import type { Post } from '@/types';
 
-// ✅ 正しいPageProps型
+// ✅ ページコンポーネント用の型定義
 interface PageProps {
   params: {
     author: string;
@@ -12,13 +12,12 @@ interface PageProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-
 export default function AuthorPage({ params }: PageProps) {
   const posts: Post[] = getAllPosts();
   const authorSlug = decodeURIComponent(params.author);
 
   const authorData = authors[authorSlug as keyof typeof authors];
-  if (!authorData) return notFound(); // 万一の保険
+  if (!authorData) return notFound();
 
   const filteredPosts = posts.filter((post) => post.author === authorSlug);
 
@@ -62,4 +61,11 @@ export default function AuthorPage({ params }: PageProps) {
       )}
     </main>
   );
+}
+
+// ✅ Next.js 15対応のため async に修正！
+export async function generateStaticParams() {
+  return Object.keys(authors).map((slug) => ({
+    author: encodeURIComponent(slug),
+  }));
 }
