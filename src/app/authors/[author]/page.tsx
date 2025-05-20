@@ -2,17 +2,13 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Post } from '@/types';
 
-export default async function AuthorPage({ params }: { params: Promise<{ author: string }> }) {
-  const { author } = await params;
-  const authorSlug = decodeURIComponent(author);
-
+export default function AuthorPage({ params }: { params: { author: string } }) {
+  const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
   if (!authorData) return notFound();
 
-  const posts: Post[] = getAllPosts();
-  const filteredPosts = posts.filter((post) => post.author === authorSlug);
+  const posts = getAllPosts().filter((post) => post.author === authorSlug);
 
   return (
     <main className="p-8">
@@ -25,11 +21,11 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
         <p className="text-sm text-gray-500">{authorData.bio}</p>
       </div>
 
-      {filteredPosts.length === 0 ? (
+      {posts.length === 0 ? (
         <p className="text-gray-500">この投稿者の記事は見つかりませんでした。</p>
       ) : (
         <ul>
-          {filteredPosts.map((post) => (
+          {posts.map((post) => (
             <li key={post.slug} className="mb-6">
               <div className="flex flex-wrap gap-2 mb-1">
                 {post.tags?.map((tag) => (
@@ -56,6 +52,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
   );
 }
 
+// ✅ static paths の定義
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
