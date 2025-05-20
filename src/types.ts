@@ -1,10 +1,10 @@
 // src/types.ts
 
 export type Author = {
-  name: string;
   slug: string;
+  name: string;
   bio: string;
-  field: '理系' | '文系';
+  field: '文系' | '理系';
 };
 
 export type Post = {

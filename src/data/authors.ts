@@ -1,23 +1,28 @@
+import type { Author } from '@/types';
+
 export type AuthorInfo = {
   name: string;
   description: string;
   type: string;
 };
 
-export const authors: { [key: string]: AuthorInfo } = {
-  "えいしょう": {
-    name: "えいしょう",
-    description: "浪人時代は物理・数学を中心に勉強していました。集中型の学習法が得意です。",
-    type: "理系",
+export const authors: Record<string, Author> = {
+  えいしょう: {
+    slug: 'えいしょう',
+    name: 'えいしょう',
+    bio: '名古屋大学志望だった理系男子',
+    field: '理系',
   },
-  "おれ": {
-    name: "おれ",
-    description: "現代文・地理・英語を軸に成績アップを目指してきました。",
-    type: "文系",
+  おれ: {
+    slug: 'おれ',
+    name: 'おれ',
+    bio: '国語と小論文が得意な文系人間',
+    field: '文系',
   },
-  "あなた": {
-    name: "あなた",
-    description: "共通テストで理系科目の解き方を効率化する工夫をしてきました。",
-    type: "理系",
+  あなた: {
+    slug: 'あなた',
+    name: 'あなた',
+    bio: '最強のエンジニア志望',
+    field: '理系',
   },
 };

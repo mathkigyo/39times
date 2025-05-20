@@ -5,16 +5,17 @@ import type { Post } from '@/types';
 
 type Params = {
   params: {
-    slug: string;
+    author: string;
   };
 };
 
 export default function AuthorPage({ params }: Params) {
   const posts: Post[] = getAllPosts();
-  const slug = decodeURIComponent(params.slug);
+  const authorSlug = decodeURIComponent(params.author);
 
-  const authorData = authors[slug]; // 名前・文理・説明
-  const filteredPosts = posts.filter((post) => post.author === slug); // author は slugでOK
+  const authorData = authors[authorSlug as keyof typeof authors];
+ // 名前・文理・説明
+  const filteredPosts = posts.filter((post) => post.author === authorSlug); // author は slugでOK
 
   return (
     <main className="p-8">
@@ -23,9 +24,9 @@ export default function AuthorPage({ params }: Params) {
       {authorData && (
         <div className="mb-6">
           <p className="text-sm text-gray-700">
-            分類：<span className="font-semibold">{authorData.type}</span>
+            分類：<span className="font-semibold">{authorData.field}</span>
           </p>
-          <p className="text-sm text-gray-500">{authorData.description}</p>
+          <p className="text-sm text-gray-500">{authorData.bio}</p>
         </div>
       )}
 

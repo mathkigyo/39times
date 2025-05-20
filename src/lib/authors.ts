@@ -1,19 +1,22 @@
-// src/lib/authors.ts
+import type { Author } from '@/types';
 
-export const authors = {
-  "えいしょう": {
-    name: "えいしょう",
-    type: "理系",
-    description: "数学が得意な浪人経験者です。",
+export const authors: Record<string, Author> = {
+  えいしょう: {
+    slug: 'えいしょう',
+    name: 'えいしょう',
+    bio: '名古屋大学志望だった理系男子。物理と数学が得意。',
+    field: '理系',
   },
-  "おれ": {
-    name: "おれ",
-    type: "文系",
-    description: "英語と社会が得意な現役合格者。",
+  おれ: {
+    slug: 'おれ',
+    name: 'おれ',
+    bio: '国語と小論文が得意な文系。人文系に強い。',
+    field: '文系',
   },
-  "あなた": {
-    name: "あなた",
-    type: "理系",
-    description: "物理が得意な理系志望の挑戦者。",
+  あなた: {
+    slug: 'あなた',
+    name: 'あなた',
+    bio: '最強のエンジニア志望。C言語とPythonに挑戦中。',
+    field: '理系',
   },
 };
