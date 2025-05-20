@@ -1,34 +1,35 @@
-import { authors } from '@/lib/authors'; // ← 場所注意！
+import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import type { Post } from '@/types';
+import { notFound } from 'next/navigation';
 
-type Params = {
+// ✅ 正しいPageProps型
+type PageProps = {
   params: {
     author: string;
   };
 };
 
-export default function AuthorPage({ params }: Params) {
+export default function AuthorPage({ params }: PageProps) {
   const posts: Post[] = getAllPosts();
   const authorSlug = decodeURIComponent(params.author);
 
   const authorData = authors[authorSlug as keyof typeof authors];
- // 名前・文理・説明
-  const filteredPosts = posts.filter((post) => post.author === authorSlug); // author は slugでOK
+  if (!authorData) return notFound(); // 万一の保険
+
+  const filteredPosts = posts.filter((post) => post.author === authorSlug);
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-2">{authorData?.name} さんの記事一覧</h1>
+      <h1 className="text-2xl font-bold mb-2">{authorData.name} さんの記事一覧</h1>
 
-      {authorData && (
-        <div className="mb-6">
-          <p className="text-sm text-gray-700">
-            分類：<span className="font-semibold">{authorData.field}</span>
-          </p>
-          <p className="text-sm text-gray-500">{authorData.bio}</p>
-        </div>
-      )}
+      <div className="mb-6">
+        <p className="text-sm text-gray-700">
+          分類：<span className="font-semibold">{authorData.field}</span>
+        </p>
+        <p className="text-sm text-gray-500">{authorData.bio}</p>
+      </div>
 
       {filteredPosts.length === 0 ? (
         <p className="text-gray-500">この投稿者の記事は見つかりませんでした。</p>
