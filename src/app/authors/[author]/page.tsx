@@ -3,7 +3,11 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-export default function AuthorPage({ params }: { params: { author: string } }) {
+export default function AuthorPage({
+  params,
+}: {
+  params: { author: string };
+}) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
   if (!authorData) return notFound();
@@ -52,7 +56,6 @@ export default function AuthorPage({ params }: { params: { author: string } }) {
   );
 }
 
-// ✅ static paths の定義
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
