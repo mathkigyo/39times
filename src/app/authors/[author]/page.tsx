@@ -3,11 +3,7 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-export default async function AuthorPage({
-  params,
-}: {
-  params: { author: string };
-}) {
+export default async function AuthorPage({ params }: any) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
