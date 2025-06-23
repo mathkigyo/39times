@@ -4,15 +4,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ 型定義
-interface AuthorPageProps {
-  params: {
-    author: string;
-  };
-}
-
-// ✅ SEO用 metadata（必ず async + Promise<Metadata> にする）
-export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
+// ✅ SEO用 metadata（型を自作せずインラインで）
+export async function generateMetadata({
+  params,
+}: {
+  params: { author: string };
+}): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
@@ -44,7 +41,13 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ ページ本体
+// ✅ ページ本体（ここでは AuthorPageProps をOK）
+interface AuthorPageProps {
+  params: {
+    author: string;
+  };
+}
+
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
