@@ -1,22 +1,25 @@
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { author: string } }): Promise<Metadata> {
+type Props = {
+  params: {
+    author: string;
+  };
+};
+
+export async function generateMetadata({ params }: Props) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
-  if (!authorData) return { title: '投稿者が見つかりません' };
-
   return {
-    title: `${authorData.name} さんの記事一覧 - 39times`,
-    description: `${authorData.name} さんの勉強記録や受験体験を紹介しています。`,
+    title: `${authorData?.name ?? 'Unknown'} さんの記事一覧`,
+    description: authorData?.bio ?? '',
   };
 }
 
-export default async function Page({ params }: { params: { author: string } }) {
+export default async function AuthorPage({ params }: Props) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
@@ -42,7 +45,10 @@ export default async function Page({ params }: { params: { author: string } }) {
             <li key={post.slug} className="mb-6">
               <div className="flex flex-wrap gap-2 mb-1">
                 {post.tags?.map((tag) => (
-                  <span key={tag} className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">
+                  <span
+                    key={tag}
+                    className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded"
+                  >
                     #{tag}
                   </span>
                 ))}
