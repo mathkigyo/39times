@@ -2,19 +2,7 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-//import type { Metadata } from 'next';
 
-// ✅ metadata: generateMetadataは外す（ビルド通したいだけなら）
-// もしくは後でやる
-
-// ✅ generateStaticParams を同期関数にする（ここが核心）
-export function generateStaticParams() {
-  return Object.keys(authors).map((slug) => ({
-    author: encodeURIComponent(slug),
-  }));
-}
-
-// ✅ ページ本体（paramsの型はinlineでOK）
 export default async function AuthorPage({
   params,
 }: {
