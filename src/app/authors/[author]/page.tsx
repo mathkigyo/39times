@@ -3,7 +3,7 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-// ✅ async を明示
+// ✅ async を明示する
 export default async function Page({
   params,
 }: {
@@ -58,7 +58,7 @@ export default async function Page({
   );
 }
 
-// ✅ SSG対応：動的ルート用
+// ✅ generateStaticParams はそのままでOK
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
