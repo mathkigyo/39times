@@ -9,7 +9,7 @@ export default function AuthorsPage() {
   const [query, setQuery] = useState('');
 
   const authorEntries = Object.entries(authors);
-  const filteredEntries = authorEntries.filter(([slug, author]: [string, Author]) =>
+  const filteredEntries = authorEntries.filter(([, author]: [string, Author]) =>
     author.name.toLowerCase().includes(query.toLowerCase())
   );
 
