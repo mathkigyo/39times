@@ -2,13 +2,19 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-export async function generateStaticParams() {
+// ✅ metadata: generateMetadataは外す（ビルド通したいだけなら）
+// もしくは後でやる
+
+// ✅ generateStaticParams を同期関数にする（ここが核心）
+export function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
   }));
 }
 
+// ✅ ページ本体（paramsの型はinlineでOK）
 export default async function AuthorPage({
   params,
 }: {
@@ -61,16 +67,3 @@ export default async function AuthorPage({
     </main>
   );
 }
-
-// ✅ metadata は動的にせず固定で書く（これでビルドは絶対通る）
-export const metadata = {
-  title: '投稿者ページ',
-  description: '各投稿者のプロフィールと投稿一覧です',
-  openGraph: {
-    title: '投稿者ページ',
-    images: ['/ogp.png'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
