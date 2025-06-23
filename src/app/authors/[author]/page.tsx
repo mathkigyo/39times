@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ SEO用 metadata（型を自作せずインラインで）
+// ✅ metadata は inline 型定義（絶対 AuthorPageProps を使わない）
 export async function generateMetadata({
   params,
 }: {
@@ -34,21 +34,19 @@ export async function generateMetadata({
   };
 }
 
-// ✅ SSG 用のパス生成
+// ✅ SSG 用のパス生成（問題なし）
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
   }));
 }
 
-// ✅ ページ本体（ここでは AuthorPageProps をOK）
-interface AuthorPageProps {
-  params: {
-    author: string;
-  };
-}
-
-export default async function AuthorPage({ params }: AuthorPageProps) {
+// ✅ ページ本体（ここだけ `params` 型を定義する）
+export default async function AuthorPage({
+  params,
+}: {
+  params: { author: string };
+}) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
