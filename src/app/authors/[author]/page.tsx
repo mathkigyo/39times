@@ -2,8 +2,15 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-export default async function Page({ params }: { params: { author: string } }) {
+type Props = {
+  params: {
+    author: string;
+  };
+};
+
+export default async function Page({ params }: Props) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
