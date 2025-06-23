@@ -4,7 +4,6 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 
 // ✅ 型定義を明示する
 interface AuthorPageProps {
