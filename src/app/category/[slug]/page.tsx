@@ -1,10 +1,31 @@
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import type { Post } from '@/types';
+import type { Metadata } from 'next'; // Metadataの型をインポート
 
+// Propsの型定義
 type Props = {
   params: { slug: string };
 };
+
+// メタデータを生成する関数
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const categoryNameMap: { [key: string]: string } = {
+    'study-log': '勉強ログ',
+    'exam-results': '模試結果',
+    'book-reviews': '参考書レビュー',
+  };
+  const categoryName = categoryNameMap[params.slug] ?? '未分類';
+
+  return {
+    title: `${categoryName} の記事一覧`,
+    description: `${categoryName}に関する記事の一覧ページです。`,
+    // 必要であれば、ogp.pngなどの画像も設定できます
+    // openGraph: {
+    //   images: ['/ogp.png'],
+    // },
+  };
+}
 
 const categoryNameMap: { [key: string]: string } = {
   'study-log': '勉強ログ',

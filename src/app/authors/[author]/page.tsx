@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */ // この行は基本的には削除を推奨しますが、今回は変更を最小限にするため残します
 
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
@@ -6,8 +6,15 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// generateMetadata に渡す props の型は any で逃げる
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+// Propsの型を明確に定義します
+interface AuthorPageProps {
+  params: {
+    author: string; // [author] の部分が文字列として渡されます
+  };
+}
+
+// generateMetadata は非同期関数です
+export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -24,7 +31,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     openGraph: {
       title: `${authorData.name} の記事一覧`,
       description: `${authorData.name}（${authorData.field}）の投稿一覧ページ`,
-      images: ['/ogp.png'],
+      images: ['/ogp.png'], // OGP画像のパスが正しいか確認してください
     },
     twitter: {
       card: 'summary_large_image',
@@ -33,7 +40,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 // ページ本体
-export default async function AuthorPage({ params }: any) {
+export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -81,4 +88,3 @@ export default async function AuthorPage({ params }: any) {
     </main>
   );
 }
-
