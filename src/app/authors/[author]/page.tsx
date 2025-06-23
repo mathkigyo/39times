@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */ // この行は基本的には削除を推奨しますが、今回は変更を最小限にするため残します
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next'; // ResolvingMetadata をインポート
 
 // Propsの型を明確に定義します
 interface AuthorPageProps {
@@ -13,8 +13,11 @@ interface AuthorPageProps {
   };
 }
 
-// generateMetadata は非同期関数です
-export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
+// generateMetadata の型定義を ResolvingMetadata を使ってより厳密にします
+export async function generateMetadata(
+  { params }: AuthorPageProps,
+  parent: ResolvingMetadata // parent を追加
+): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -24,6 +27,9 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
       description: '指定された投稿者は存在しません',
     };
   }
+
+  // parent から既存のメタデータを取得することも可能です（任意）
+  // const previousImages = (await parent).openGraph?.images || []
 
   return {
     title: `${authorData.name} の記事一覧`,
@@ -50,7 +56,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-2">{authorData.name} さんの記事一覧</h1>
+      <h1 className="text-2xl font-bold">{authorData.name} さんの記事一覧</h1>
       <div className="mb-6">
         <p className="text-sm text-gray-700">
           分類：<span className="font-semibold">{authorData.field}</span>
