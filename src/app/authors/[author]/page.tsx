@@ -1,25 +1,25 @@
+// src/app/authors/[author]/page.tsx
+
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-type Props = {
+// ✅ 型定義を明示する
+interface AuthorPageProps {
   params: {
     author: string;
   };
-};
-
-export async function generateMetadata({ params }: Props) {
-  const authorSlug = decodeURIComponent(params.author);
-  const authorData = authors[authorSlug as keyof typeof authors];
-
-  return {
-    title: `${authorData?.name ?? 'Unknown'} さんの記事一覧`,
-    description: authorData?.bio ?? '',
-  };
 }
 
-export default async function AuthorPage({ params }: Props) {
+export async function generateStaticParams() {
+  return Object.keys(authors).map((slug) => ({
+    author: encodeURIComponent(slug),
+  }));
+}
+
+export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
@@ -66,10 +66,4 @@ export default async function AuthorPage({ params }: Props) {
       )}
     </main>
   );
-}
-
-export async function generateStaticParams() {
-  return Object.keys(authors).map((slug) => ({
-    author: encodeURIComponent(slug),
-  }));
 }
