@@ -10,7 +10,8 @@ interface AuthorPageProps {
   };
 }
 
-export function generateMetadata({ params }: AuthorPageProps): Metadata {
+// ✅ 修正：generateMetadata を async にする
+export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -35,6 +36,7 @@ export function generateMetadata({ params }: AuthorPageProps): Metadata {
   };
 }
 
+// ✅ ページ本体
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
