@@ -3,12 +3,7 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-// ✅ ←これが絶対必要！！！
-export default async function Page({
-  params,
-}: {
-  params: { author: string };
-}) {
+export default async function Page({ params }: { params: { author: string } }) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 
@@ -19,7 +14,6 @@ export default async function Page({
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold mb-2">{authorData.name} さんの記事一覧</h1>
-
       <div className="mb-6">
         <p className="text-sm text-gray-700">
           分類：<span className="font-semibold">{authorData.field}</span>
@@ -35,10 +29,7 @@ export default async function Page({
             <li key={post.slug} className="mb-6">
               <div className="flex flex-wrap gap-2 mb-1">
                 {post.tags?.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded"
-                  >
+                  <span key={tag} className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">
                     #{tag}
                   </span>
                 ))}
