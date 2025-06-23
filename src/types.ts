@@ -1,5 +1,3 @@
-// src/types.ts
-
 export type Author = {
   slug: string;
   name: string;
@@ -13,6 +11,7 @@ export type Post = {
   date: string;
   author: string; // slug でOK
   tags: string[];
+  category: 'study-log' | 'exam-results' | 'book-reviews' | ''; // ✅ 空もOKに！
   content: string;
   excerpt?: string;
   pv?: number;

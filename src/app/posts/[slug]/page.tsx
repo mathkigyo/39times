@@ -3,7 +3,8 @@ import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
-import { getAllPosts } from "@/lib/posts"; // ← 追加
+import { getAllPosts } from "@/lib/posts";
+import ViewCounter from "@/components/ViewCounter";
 
 type Params = {
   params: {
@@ -19,34 +20,61 @@ export async function generateStaticParams() {
 }
 
 export default async function PostPage({ params }: Params) {
-  const filePath = path.join(process.cwd(), "src", "content", `${params.slug}.md`);
+  const slug = params.slug;
+  const filePath = path.join(process.cwd(), "src", "content", `${slug}.md`);
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(fileContent);
 
   const processedContent = await remark().use(html).process(content);
   const contentHtml = processedContent.toString();
 
-  // 🔁 関連記事ロジック（タグと投稿者ベース）
   const allPosts = getAllPosts();
   const relatedByTag = allPosts.filter(
     (post) =>
-      post.slug !== params.slug &&
+      post.slug !== slug &&
       post.tags?.some((tag) => data.tags?.includes(tag))
   );
   const relatedByAuthor = allPosts.filter(
-    (post) =>
-      post.slug !== params.slug &&
-      post.author === data.author
+    (post) => post.slug !== slug && post.author === data.author
   );
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-2">{data.title}</h1>
+      <h1 className="text-2xl font-bold mb-1">{data.title}</h1>
 
-      {/* 👁 PVカウンター（後で追加） */}
-      {/* <ViewCounter slug={params.slug} /> */}
+      {/* 投稿日と投稿者名 */}
+      <div className="text-sm text-gray-500 mb-4 flex items-center gap-2">
+        <span>
+          📅{" "}
+          {new Date(data.date).toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
+        <span>👤 {data.author}</span>
+      </div>
 
-      {/* 🔖 タグ表示 */}
+      {/* PV表示＆カウント */}
+      <ViewCounter slug={slug} />
+
+      {/* アイキャッチ画像（手動指定 or 自動） */}
+      <img
+        src={
+          data.image ??
+          (data.category === "勉強ログ"
+            ? "/images/study-log.jpg"
+            : data.category === "模試結果"
+            ? "/images/exam-results.jpg"
+            : data.category === "参考書レビュー"
+            ? "/images/book-reviews.jpg"
+            : "/images/blog.jpg")
+        }
+        alt={data.title}
+        className="w-full max-w-5xl h-48 sm:h-64 md:h-72 object-cover mx-auto rounded-lg mb-6"
+      />
+
+      {/* タグ表示 */}
       {data.tags && Array.isArray(data.tags) && data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {data.tags.map((tag: string) => (
@@ -66,14 +94,17 @@ export default async function PostPage({ params }: Params) {
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
 
-      {/* 🔁 関連記事（タグ） */}
+      {/* 関連記事（タグ） */}
       {relatedByTag.length > 0 && (
         <section className="mt-10">
-          <h2 className="text-xl font-bold mb-2">🔖 関連記事（同じタグ）</h2>
+          <h2 className="text-sm font-bold mb-2">🔖 関連記事（同じタグ）</h2>
           <ul className="list-disc pl-5 space-y-1">
             {relatedByTag.slice(0, 3).map((post) => (
               <li key={post.slug}>
-                <a href={`/posts/${post.slug}`} className="text-blue-600 hover:underline">
+                <a
+                  href={`/posts/${post.slug}`}
+                  className="text-sm text-blue-600 hover:underline"
+                >
                   {post.title}
                 </a>
               </li>
@@ -82,14 +113,17 @@ export default async function PostPage({ params }: Params) {
         </section>
       )}
 
-      {/* 👤 関連記事（同じ投稿者） */}
+      {/* 関連記事（投稿者） */}
       {relatedByAuthor.length > 0 && (
         <section className="mt-6">
-          <h2 className="text-xl font-bold mb-2">👤 投稿者の他の記事</h2>
+          <h2 className="text-sm font-bold mb-2">👤 投稿者の他の記事</h2>
           <ul className="list-disc pl-5 space-y-1">
             {relatedByAuthor.slice(0, 3).map((post) => (
               <li key={post.slug}>
-                <a href={`/posts/${post.slug}`} className="text-blue-600 hover:underline">
+                <a
+                  href={`/posts/${post.slug}`}
+                  className="text-sm text-blue-600 hover:underline"
+                >
                   {post.title}
                 </a>
               </li>

@@ -1,7 +1,7 @@
-// src/app/posts/page.tsx
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import type { Post } from '@/types';
 import Link from 'next/link';
 
@@ -11,8 +11,16 @@ type Props = {
 };
 
 export default function ClientPostList({ allPosts, popular }: Props) {
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const initialKeyword = searchParams.get('keyword') ?? '';
+
+  const [query, setQuery] = useState(initialKeyword);
   const [sortMode, setSortMode] = useState<'new' | 'old' | 'popular'>('new');
+
+  useEffect(() => {
+    setQuery(initialKeyword);
+  }, [initialKeyword]);
 
   const filteredPosts = useMemo(() => {
     const q = query.toLowerCase();
@@ -41,17 +49,30 @@ export default function ClientPostList({ allPosts, popular }: Props) {
   return (
     <main className="p-8 space-y-6">
       <h1 className="text-2xl font-bold">📝 記事一覧</h1>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="キーワードで検索（タイトル・タグ・投稿者）"
-        className="w-full p-2 border rounded"
-      />
+
+      {/* 🔍 検索フォーム */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const encoded = encodeURIComponent(query.trim());
+          router.push(`/posts?keyword=${encoded}`);
+        }}
+        className="w-full"
+      >
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="キーワードで検索（タイトル・タグ・投稿者）"
+          className="w-full p-2 border rounded"
+        />
+      </form>
+
+      {/* 並び替えボタン */}
       <div className="flex gap-3 mt-4">
         <button
           className={`px-3 py-1 rounded border ${
-            sortMode === 'new' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'
+            sortMode === 'new' ? 'bg-black text-white' : 'bg-white text-blue-600'
           }`}
           onClick={() => setSortMode('new')}
         >
@@ -59,7 +80,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
         </button>
         <button
           className={`px-3 py-1 rounded border ${
-            sortMode === 'old' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'
+            sortMode === 'old' ? 'bg-black text-white' : 'bg-white text-blue-600'
           }`}
           onClick={() => setSortMode('old')}
         >
@@ -67,7 +88,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
         </button>
         <button
           className={`px-3 py-1 rounded border ${
-            sortMode === 'popular' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'
+            sortMode === 'popular' ? 'bg-black text-white' : 'bg-white text-blue-600'
           }`}
           onClick={() => setSortMode('popular')}
         >
@@ -75,14 +96,15 @@ export default function ClientPostList({ allPosts, popular }: Props) {
         </button>
       </div>
 
+      {/* 記事リスト */}
       <ul className="space-y-4">
         {sortedPosts.length === 0 ? (
           <p className="text-gray-500 mt-4">該当する記事が見つかりませんでした。</p>
         ) : (
           sortedPosts.map((post) => (
-            <li key={post.slug} className="border p-4 rounded shadow-sm">
-              <Link href={`/posts/${post.slug}`}>
-                <h2 className="text-lg font-semibold text-blue-600 hover:underline">
+            <li key={post.slug} >
+              <Link href={`/posts/${post.slug}`} className="inline-block">
+                <h2 className="text-lg font-semibold text-black-600 hover:underline">
                   {post.title}
                 </h2>
               </Link>

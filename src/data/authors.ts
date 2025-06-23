@@ -7,9 +7,9 @@ export type AuthorInfo = {
 };
 
 export const authors: Record<string, Author> = {
-  えいしょう: {
-    slug: 'えいしょう',
-    name: 'えいしょう',
+  立教太郎: {
+    slug: '太郎',
+    name: '太郎',
     bio: '名古屋大学志望だった理系男子',
     field: '理系',
   },

@@ -1,11 +1,10 @@
-//import Link from 'next/link'; 一時削除
+// src/app/tags/page.tsx（＝TagIndexPage）
 import { getAllPosts } from '@/lib/posts';
 import type { Post } from '@/types';
 import TagList from '@/components/TagList';
 
 export default function TagIndexPage() {
   const posts: Post[] = getAllPosts();
-
   const allTags = Array.from(
     new Set(posts.flatMap((post) => post.tags || []))
   );

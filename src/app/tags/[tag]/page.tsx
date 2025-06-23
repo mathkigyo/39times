@@ -1,6 +1,7 @@
 import { Post } from '@/types';
 import { getAllPosts } from '@/lib/posts';
-import { getWeeklyPopularSlugs } from '@/lib/popular'; // ← 週間PV取得関数を追加
+import { getWeeklyPopularSlugs } from '@/lib/popular';
+import { tags } from '@/lib/tags'; // ← タグマスターを使う
 import Link from 'next/link';
 
 type Params = {
@@ -52,4 +53,11 @@ export default async function TagPage({ params }: Params) {
       )}
     </main>
   );
+}
+
+// ✅ 静的生成対象のパス（全タグ）を定義
+export function generateStaticParams() {
+  return tags.map((tag) => ({
+    tag: encodeURIComponent(tag.name),
+  }));
 }
