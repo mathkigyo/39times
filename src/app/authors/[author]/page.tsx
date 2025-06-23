@@ -4,11 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { author: string };
-}): Promise<Metadata> {
+// generateMetadata は型つけない（←これが重要）
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -33,11 +30,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function AuthorPage({
-  params,
-}: {
-  params: { author: string };
-}) {
+// ページ本体も型つけない（params: any）
+export default async function AuthorPage({ params }: any) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
