@@ -1,16 +1,22 @@
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
-type Props = {
-  params: {
-    author: string;
-  };
-};
+export async function generateMetadata({ params }: { params: { author: string } }): Promise<Metadata> {
+  const authorSlug = decodeURIComponent(params.author);
+  const authorData = authors[authorSlug as keyof typeof authors];
 
-export default async function Page({ params }: Props) {
+  if (!authorData) return { title: '投稿者が見つかりません' };
+
+  return {
+    title: `${authorData.name} さんの記事一覧 - 39times`,
+    description: `${authorData.name} さんの勉強記録や受験体験を紹介しています。`,
+  };
+}
+
+export default async function Page({ params }: { params: { author: string } }) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
 

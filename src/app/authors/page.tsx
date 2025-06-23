@@ -1,4 +1,4 @@
-'use client'; // ← クライアントコンポーネントにする！
+'use client'; // クライアントコンポーネント
 
 import { useState } from 'react';
 import { authors } from '@/lib/authors';

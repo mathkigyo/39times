@@ -4,6 +4,34 @@ import { getWeeklyPopularSlugs } from '@/lib/popular';
 import { Pencil, Clock, Book, Sparkles, Tags, Users } from 'lucide-react';
 import type { Post } from '@/types';
 
+export async function generateMetadata() {
+  return {
+    title: '39times - 受験生のための情報ブログ',
+    description: '受験生のリアルな声と勉強記録をまとめた受験ブログ。',
+    openGraph: {
+      title: '39times - 受験生のための情報ブログ',
+      description: '受験生のリアルな声と勉強記録をまとめた受験ブログ。',
+      url: 'https://39times.com/',
+      siteName: '39times',
+      images: [
+        {
+          url: 'https://39times.com/ogp.png',
+          width: 1200,
+          height: 630,
+          alt: '39times OGP',
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: '39times - 受験生のための情報ブログ',
+      description: '受験生のリアルな声と勉強記録をまとめた受験ブログ。',
+      images: ['https://39times.com/ogp.png'],
+    },
+  };
+}
+
 export default async function Home() {
   const posts: Post[] = getAllPosts();
   const popular = await getWeeklyPopularSlugs();
@@ -25,20 +53,19 @@ export default async function Home() {
     <main className="p-4 space-y-10">
       {/* 📘 メインビジュアル */}
       <section
-  className="relative text-white rounded-xl px-6 py-6 overflow-hidden h-[145px] md:h-[220px] flex flex-col justify-center"
-  style={{
-    backgroundImage: "url('/blog-picture.jpg')",
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  }}
->
-  <div className="absolute inset-0 bg-black/30" />
-  <div className="relative z-10">
-    <h2 className="text-xl md:text-3xl font-bold mb-1">39timesへようこそ</h2>
-    <p className="text-xs md:text-sm">全国の頑張る受験生を応援しています</p>
-  </div>
-</section>
-
+        className="relative text-white rounded-xl px-6 py-6 overflow-hidden h-[145px] md:h-[220px] flex flex-col justify-center"
+        style={{
+          backgroundImage: "url('/blog-picture.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative z-10">
+          <h2 className="text-xl md:text-3xl font-bold mb-1">39timesへようこそ</h2>
+          <p className="text-xs md:text-sm">全国の頑張る受験生を応援しています</p>
+        </div>
+      </section>
 
       {/* 📂 カテゴリ一覧 */}
       <section>
@@ -58,13 +85,10 @@ export default async function Home() {
         {recentPosts.length === 0 ? (
           <p className="text-gray-500">まだ記事がありません。</p>
         ) : (
-          
           <div className="bg-gray-50 p-4 rounded-md">
             {recentPosts.map((post: Post) => (
-              <div
-              key={post.slug}
-              >  
-              <Link
+              <div key={post.slug}>
+                <Link
                   href={`/posts/${post.slug}`}
                   className="block p-3 bg-white rounded shadow hover:bg-gray-100 transition"
                 >
@@ -74,7 +98,6 @@ export default async function Home() {
               </div>
             ))}
           </div>
-          
         )}
       </section>
 
@@ -85,15 +108,9 @@ export default async function Home() {
           <p className="text-gray-500">まだ人気記事はありません。</p>
         ) : (
           <div className="bg-gray-50 p-4 rounded-md">
-          
             {popularPosts.map((post) => (
-              <div key={post.slug}
-              className="p-3 bg-white rounded shadow hover:bg-gray-100 transition"
-              >
-                <Link
-                  href={`/posts/${post.slug}`}
-                  className="block"
-                >
+              <div key={post.slug} className="p-3 bg-white rounded shadow hover:bg-gray-100 transition">
+                <Link href={`/posts/${post.slug}`} className="block">
                   <h3 className="text-base font-medium hover:underline text-black-700">{post.title}</h3>
                   <p className="text-sm text-gray-500">{post.views} views</p>
                 </Link>
@@ -128,7 +145,7 @@ export default async function Home() {
   );
 }
 
-// カテゴリカード
+// 🧩 カテゴリカード
 function CategoryItem({
   icon,
   label,
