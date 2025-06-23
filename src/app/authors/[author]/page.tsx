@@ -56,6 +56,7 @@ export default function AuthorPage({
   );
 }
 
+// ⬇️ ここに async を追加！
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
