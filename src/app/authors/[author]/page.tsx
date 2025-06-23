@@ -3,6 +3,7 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function AuthorPage({ params }: any) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
