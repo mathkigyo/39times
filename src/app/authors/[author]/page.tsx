@@ -4,14 +4,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ Next.jsのPage用の型
 interface AuthorPageProps {
   params: {
     author: string;
   };
 }
 
-// ✅ OGPやSEO用 metadata の設定
 export function generateMetadata({ params }: AuthorPageProps): Metadata {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
@@ -37,14 +35,6 @@ export function generateMetadata({ params }: AuthorPageProps): Metadata {
   };
 }
 
-// ✅ SSG 用の動的パス生成
-export async function generateStaticParams() {
-  return Object.values(authors).map((author) => ({
-    author: encodeURIComponent(author.slug),
-  }));
-}
-
-// ✅ 実際のページ本体
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);

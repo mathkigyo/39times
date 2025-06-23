@@ -1,9 +1,7 @@
-import { getAllPosts } from '@/lib/posts';
+import { authors } from '@/lib/authors';
 
 export function generateStaticParams() {
-  const posts = getAllPosts();
-  const uniqueCategories = Array.from(new Set(posts.map((post) => post.category)));
-  return uniqueCategories.map((slug) => ({
-    slug: encodeURIComponent(slug),
+  return Object.values(authors).map((author) => ({
+    author: encodeURIComponent(author.slug),
   }));
 }
