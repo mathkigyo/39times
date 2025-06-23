@@ -2,16 +2,13 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 
-// ✅ 型定義はこうする
 type AuthorPageProps = {
   params: {
     author: string;
   };
 };
 
-// ✅ async 関数＋正しい props 型
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
