@@ -4,13 +4,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ GenerateMetadata 用の正しい型
-type Props = {
+export async function generateMetadata({
+  params,
+}: {
   params: { author: string };
-};
-
-// ✅ 型が一致しないエラー対策のため、anyを使って型制約を回避（または公式型使う）
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+}): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -35,8 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ✅ ページ本体
-export default async function AuthorPage({ params }: Props) {
+export default async function AuthorPage({
+  params,
+}: {
+  params: { author: string };
+}) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
