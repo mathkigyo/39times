@@ -1,23 +1,50 @@
-// src/app/authors/[author]/page.tsx
-
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-// ✅ 型定義を明示する
+// ✅ Next.jsのPage用の型
 interface AuthorPageProps {
   params: {
     author: string;
   };
 }
 
+// ✅ OGPやSEO用 metadata の設定
+export function generateMetadata({ params }: AuthorPageProps): Metadata {
+  const authorSlug = decodeURIComponent(params.author);
+  const authorData = authors[authorSlug as keyof typeof authors];
+
+  if (!authorData) {
+    return {
+      title: '投稿者が見つかりません',
+      description: '指定された投稿者は存在しません',
+    };
+  }
+
+  return {
+    title: `${authorData.name} の記事一覧`,
+    description: `${authorData.name}（${authorData.field}）の投稿一覧ページ`,
+    openGraph: {
+      title: `${authorData.name} の記事一覧`,
+      description: `${authorData.name}（${authorData.field}）の投稿一覧ページ`,
+      images: ['/ogp.png'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+    },
+  };
+}
+
+// ✅ SSG 用の動的パス生成
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
   }));
 }
 
+// ✅ 実際のページ本体
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
