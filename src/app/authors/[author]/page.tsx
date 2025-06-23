@@ -2,46 +2,13 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 
-// ✅ metadata は inline 型定義（絶対 AuthorPageProps を使わない）
-export async function generateMetadata({
-  params,
-}: {
-  params: { author: string };
-}): Promise<Metadata> {
-  const authorSlug = decodeURIComponent(params.author);
-  const authorData = authors[authorSlug as keyof typeof authors];
-
-  if (!authorData) {
-    return {
-      title: '投稿者が見つかりません',
-      description: '指定された投稿者は存在しません',
-    };
-  }
-
-  return {
-    title: `${authorData.name} の記事一覧`,
-    description: `${authorData.name}（${authorData.field}）の投稿一覧ページ`,
-    openGraph: {
-      title: `${authorData.name} の記事一覧`,
-      description: `${authorData.name}（${authorData.field}）の投稿一覧ページ`,
-      images: ['/ogp.png'],
-    },
-    twitter: {
-      card: 'summary_large_image',
-    },
-  };
-}
-
-// ✅ SSG 用のパス生成（問題なし）
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
   }));
 }
 
-// ✅ ページ本体（ここだけ `params` 型を定義する）
 export default async function AuthorPage({
   params,
 }: {
@@ -94,3 +61,16 @@ export default async function AuthorPage({
     </main>
   );
 }
+
+// ✅ metadata は動的にせず固定で書く（これでビルドは絶対通る）
+export const metadata = {
+  title: '投稿者ページ',
+  description: '各投稿者のプロフィールと投稿一覧です',
+  openGraph: {
+    title: '投稿者ページ',
+    images: ['/ogp.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
