@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// generateMetadata は型つけない（←これが重要）
+// generateMetadata に渡す props の型は any で逃げる
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   };
 }
 
-// ページ本体も型つけない（params: any）
+// ページ本体
 export default async function AuthorPage({ params }: any) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
@@ -79,3 +81,4 @@ export default async function AuthorPage({ params }: any) {
     </main>
   );
 }
+
