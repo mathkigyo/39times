@@ -2,12 +2,17 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-export default async function AuthorPage({
-  params,
-}: {
-  params: { author: string };
-}) {
+// ✅ 型定義はこうする
+type AuthorPageProps = {
+  params: {
+    author: string;
+  };
+};
+
+// ✅ async 関数＋正しい props 型
+export default async function AuthorPage({ params }: AuthorPageProps) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
   if (!authorData) return notFound();
@@ -56,6 +61,7 @@ export default async function AuthorPage({
   );
 }
 
+// 静的生成のパス
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
