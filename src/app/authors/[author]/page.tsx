@@ -3,13 +3,13 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-type AuthorPageProps = {
+interface Props {
   params: {
     author: string;
   };
-};
+}
 
-export default async function AuthorPage({ params }: AuthorPageProps) {
+export default function Page({ params }: Props) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
   if (!authorData) return notFound();
@@ -58,7 +58,6 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
   );
 }
 
-// 静的生成のパス
 export async function generateStaticParams() {
   return Object.keys(authors).map((slug) => ({
     author: encodeURIComponent(slug),
