@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
-import { Pencil, Clock, Book, Sparkles, Tags, Users, DivideCircleIcon } from 'lucide-react';
+import { Pencil, Clock, Book, Sparkles, Tags, Users } from 'lucide-react';
 import type { Post } from '@/types';
 
 export default async function Home() {
