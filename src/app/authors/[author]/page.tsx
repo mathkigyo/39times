@@ -3,15 +3,15 @@ import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-interface Props {
-  params: {
-    author: string;
-  };
-}
-
-export default function Page({ params }: Props) {
+// ✅ 修正ポイント：props を async に対応させる
+export default async function Page({
+  params,
+}: {
+  params: { author: string };
+}) {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = authors[authorSlug as keyof typeof authors];
+
   if (!authorData) return notFound();
 
   const posts = getAllPosts().filter((post) => post.author === authorSlug);
