@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ SEO設定
-export async function generateMetadata(
-  { params }: { params: { author: string } }
-): Promise<Metadata> {
+// ✅ SEO設定（戻り値の型を明示することで型解釈エラーを防ぐ）
+export async function generateMetadata({
+  params,
+}: {
+  params: { author: string };
+}): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -86,8 +88,10 @@ export default async function AuthorPage({
   );
 }
 
-// ✅ 追加！静的生成パス指定（エラーの元だった！）
-export async function generateStaticParams() {
+// ✅ 動的パス（静的生成）設定
+export async function generateStaticParams(): Promise<
+  { author: string }[]
+> {
   return Object.values(authors).map((author) => ({
     author: encodeURIComponent(author.slug),
   }));
