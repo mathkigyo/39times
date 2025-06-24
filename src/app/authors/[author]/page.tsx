@@ -4,7 +4,7 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata, ResolvingMetadata } from 'next'; // ResolvingMetadata をインポート
+import type { Metadata } from 'next'; // ResolvingMetadata は不要になったので削除
 
 // Propsの型を明確に定義します
 interface AuthorPageProps {
@@ -13,11 +13,8 @@ interface AuthorPageProps {
   };
 }
 
-// generateMetadata の型定義を ResolvingMetadata を使ってより厳密にします
-export async function generateMetadata(
-  { params }: AuthorPageProps,
-  parent: ResolvingMetadata // parent を追加
-): Promise<Metadata> {
+// generateMetadata の型定義を AuthorPageProps のみでシンプルにします
+export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
   const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
@@ -27,9 +24,6 @@ export async function generateMetadata(
       description: '指定された投稿者は存在しません',
     };
   }
-
-  // parent から既存のメタデータを取得することも可能です（任意）
-  // const previousImages = (await parent).openGraph?.images || []
 
   return {
     title: `${authorData.name} の記事一覧`,
