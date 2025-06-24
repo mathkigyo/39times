@@ -16,4 +16,3 @@ export default function ClientWrapper({ allPosts, popular }: Props) {
     </Suspense>
   );
 }
-
