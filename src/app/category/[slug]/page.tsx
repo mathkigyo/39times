@@ -1,29 +1,24 @@
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import type { Post } from '@/types';
-import type { Metadata } from 'next'; // Metadataの型をインポート
+import type { Metadata } from 'next';
 
-// Propsの型定義
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
-// メタデータを生成する関数
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const categoryNameMap: { [key: string]: string } = {
     'study-log': '勉強ログ',
     'exam-results': '模試結果',
     'book-reviews': '参考書レビュー',
   };
-  const categoryName = categoryNameMap[params.slug] ?? '未分類';
+  const categoryName = categoryNameMap[slug] ?? '未分類';
 
   return {
     title: `${categoryName} の記事一覧`,
     description: `${categoryName}に関する記事の一覧ページです。`,
-    // 必要であれば、ogp.pngなどの画像も設定できます
-    // openGraph: {
-    //   images: ['/ogp.png'],
-    // },
   };
 }
 
@@ -33,10 +28,11 @@ const categoryNameMap: { [key: string]: string } = {
   'book-reviews': '参考書レビュー',
 };
 
-export default function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params }: Props) {
+  const { slug } = await params;
   const allPosts = getAllPosts();
-  const posts = allPosts.filter((post: Post) => post.category === params.slug);
-  const categoryName = categoryNameMap[params.slug] ?? '未分類';
+  const posts = allPosts.filter((post: Post) => post.category === slug);
+  const categoryName = categoryNameMap[slug] ?? '未分類';
 
   return (
     <main className="p-6 space-y-6">

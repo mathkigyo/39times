@@ -4,18 +4,15 @@ import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next'; // ResolvingMetadata は不要になったので削除
+import type { Metadata } from 'next';
 
-// Propsの型を明確に定義します
-interface AuthorPageProps {
-  params: {
-    author: string; // [author] の部分が文字列として渡されます
-  };
-}
+type AuthorPageProps = {
+  params: Promise<{ author: string }>;
+};
 
-// generateMetadata の型定義を AuthorPageProps のみでシンプルにします
 export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
-  const authorSlug = decodeURIComponent(params.author);
+  const { author } = await params;
+  const authorSlug = decodeURIComponent(author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
   if (!authorData) {
@@ -31,7 +28,7 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
     openGraph: {
       title: `${authorData.name} の記事一覧`,
       description: `${authorData.name}（${authorData.field}）の投稿一覧ページ`,
-      images: ['/ogp.png'], // OGP画像のパスが正しいか確認してください
+      images: ['/ogp.png'],
     },
     twitter: {
       card: 'summary_large_image',
@@ -39,9 +36,9 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
   };
 }
 
-// ページ本体
 export default async function AuthorPage({ params }: AuthorPageProps) {
-  const authorSlug = decodeURIComponent(params.author);
+  const { author } = await params;
+  const authorSlug = decodeURIComponent(author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
   if (!authorData) return notFound();

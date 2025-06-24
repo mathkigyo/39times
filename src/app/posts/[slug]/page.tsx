@@ -7,9 +7,7 @@ import { getAllPosts } from "@/lib/posts";
 import ViewCounter from "@/components/ViewCounter";
 
 type Params = {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
@@ -20,7 +18,7 @@ export async function generateStaticParams() {
 }
 
 export default async function PostPage({ params }: Params) {
-  const slug = params.slug;
+  const { slug } = await params;
   const filePath = path.join(process.cwd(), "src", "content", `${slug}.md`);
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(fileContent);
