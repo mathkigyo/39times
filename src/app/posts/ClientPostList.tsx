@@ -13,14 +13,15 @@ type Props = {
 export default function ClientPostList({ allPosts, popular }: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialKeyword = searchParams.get('keyword') ?? '';
 
-  const [query, setQuery] = useState(initialKeyword);
+  const [query, setQuery] = useState('');
   const [sortMode, setSortMode] = useState<'new' | 'old' | 'popular'>('new');
 
+  // ✅ useSearchParams は useEffect 内で使用
   useEffect(() => {
-    setQuery(initialKeyword);
-  }, [initialKeyword]);
+    const keyword = searchParams.get('keyword') ?? '';
+    setQuery(keyword);
+  }, [searchParams]);
 
   const filteredPosts = useMemo(() => {
     const q = query.toLowerCase();
@@ -102,7 +103,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
           <p className="text-gray-500 mt-4">該当する記事が見つかりませんでした。</p>
         ) : (
           sortedPosts.map((post) => (
-            <li key={post.slug} >
+            <li key={post.slug}>
               <Link href={`/posts/${post.slug}`} className="inline-block">
                 <h2 className="text-lg font-semibold text-black-600 hover:underline">
                   {post.title}
