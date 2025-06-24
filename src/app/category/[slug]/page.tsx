@@ -4,7 +4,7 @@ import type { Post } from '@/types';
 import type { Metadata } from 'next';
 
 type Props = {
-  params: { slug: string }; // ✅ Promise外す！
+  params: { slug: string }; // ✅ 修正済み！
 };
 
 export function generateMetadata({ params }: Props): Metadata {
@@ -29,7 +29,7 @@ const categoryNameMap: { [key: string]: string } = {
 };
 
 export default async function CategoryPage({ params }: Props) {
-  const { slug } = params; // ✅ await外す！
+  const { slug } = params;
   const allPosts = getAllPosts();
   const posts = allPosts.filter((post: Post) => post.category === slug);
   const categoryName = categoryNameMap[slug] ?? '未分類';
