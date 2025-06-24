@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { authors } from '@/lib/authors';
 import { getAllPosts } from '@/lib/posts';
 import Link from 'next/link';
@@ -7,12 +5,11 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
 type AuthorPageProps = {
-  params: Promise<{ author: string }>;
+  params: { author: string };
 };
 
 export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
-  const { author } = await params;
-  const authorSlug = decodeURIComponent(author);
+  const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
   if (!authorData) {
@@ -36,9 +33,8 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
   };
 }
 
-export default async function AuthorPage({ params }: AuthorPageProps) {
-  const { author } = await params;
-  const authorSlug = decodeURIComponent(author);
+export default function AuthorPage({ params }: AuthorPageProps) {
+  const authorSlug = decodeURIComponent(params.author);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
   if (!authorData) return notFound();

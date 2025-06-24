@@ -2,8 +2,8 @@ import { getAllPosts } from '@/lib/posts';
 import type { Post } from '@/types';
 import TagList from '@/components/TagList';
 
-export default async function TagIndexPage() {
-  const posts: Post[] = await getAllPosts();
+export default function TagIndexPage() {
+  const posts: Post[] = getAllPosts();
   const allTags = Array.from(
     new Set(posts.flatMap((post) => post.tags || []))
   );
@@ -15,4 +15,3 @@ export default async function TagIndexPage() {
     </main>
   );
 }
-
