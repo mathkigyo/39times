@@ -4,11 +4,11 @@ import type { Post } from '@/types';
 import type { Metadata } from 'next';
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string }; // ✅ Promise外す！
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+export function generateMetadata({ params }: Props): Metadata {
+  const { slug } = params;
   const categoryNameMap: { [key: string]: string } = {
     'study-log': '勉強ログ',
     'exam-results': '模試結果',
@@ -29,7 +29,7 @@ const categoryNameMap: { [key: string]: string } = {
 };
 
 export default async function CategoryPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug } = params; // ✅ await外す！
   const allPosts = getAllPosts();
   const posts = allPosts.filter((post: Post) => post.category === slug);
   const categoryName = categoryNameMap[slug] ?? '未分類';

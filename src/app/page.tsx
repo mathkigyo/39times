@@ -3,8 +3,10 @@ import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
 import { Pencil, Clock, Book, Sparkles, Tags, Users } from 'lucide-react';
 import type { Post } from '@/types';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+// ✅ 修正済！asyncを外して、戻り値の型を明示
+export function generateMetadata(): Metadata {
   return {
     title: '39times - 受験生のための情報ブログ',
     description: '受験生のリアルな声と勉強記録をまとめた受験ブログ。',
