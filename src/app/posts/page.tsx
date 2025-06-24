@@ -1,10 +1,15 @@
+import { Suspense } from 'react';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
-import ClientWrapper from './ClientWrapper'; // ← ラッパーを読み込む
+import ClientPostList from './ClientPostList';
 
 export default async function PostListPage() {
-  const posts = getAllPosts();
+  const allPosts = getAllPosts();
   const popular = await getWeeklyPopularSlugs();
 
-  return <ClientWrapper allPosts={posts} popular={popular} />;
+  return (
+    <Suspense fallback={<div>読み込み中...</div>}>
+      <ClientPostList allPosts={allPosts} popular={popular} />
+    </Suspense>
+  );
 }
