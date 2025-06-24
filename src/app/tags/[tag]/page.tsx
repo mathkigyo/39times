@@ -1,26 +1,22 @@
 import { Post } from '@/types';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
-import { tags } from '@/lib/tags'; // ← タグマスターを使う
+import { tags } from '@/lib/tags';
 import Link from 'next/link';
 
-type Params = {
-  params: {
-    tag: string;
-  };
+type TagPageProps = {
+  params: { tag: string };
 };
 
-export default async function TagPage({ params }: Params) {
+export default async function TagPage({ params }: TagPageProps) {
   const tag = decodeURIComponent(params.tag);
   const posts: Post[] = getAllPosts();
   const popular = await getWeeklyPopularSlugs();
 
-  // 該当タグの記事だけ抽出
   const filtered = posts.filter((post) =>
     post.tags?.includes(tag)
   );
 
-  // 各記事に今週のviewsを付ける（なければ0）
   const taggedWithViews: (Post & { views: number })[] = filtered.map((post) => {
     const pv = popular.find((p) => p.slug === post.slug);
     return {
@@ -29,7 +25,6 @@ export default async function TagPage({ params }: Params) {
     };
   });
 
-  // viewsの多い順に並べる
   const sortedPosts = taggedWithViews.sort((a, b) => b.views - a.views);
 
   return (
@@ -56,7 +51,7 @@ export default async function TagPage({ params }: Params) {
 }
 
 // ✅ 静的生成対象のパス（全タグ）を定義
-export function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ tag: string }[]> {
   return tags.map((tag) => ({
     tag: encodeURIComponent(tag.name),
   }));
