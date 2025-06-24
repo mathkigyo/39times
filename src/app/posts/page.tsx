@@ -1,3 +1,4 @@
+// src/app/posts/page.tsx
 import { Suspense } from 'react';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
@@ -13,4 +14,3 @@ export default async function PostListPage() {
     </Suspense>
   );
 }
-
