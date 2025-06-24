@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ 修正ポイント：PageProps 型ではなく直接 inline 型にする
+// ✅ SEO設定
 export async function generateMetadata(
   { params }: { params: { author: string } }
 ): Promise<Metadata> {
@@ -32,7 +32,7 @@ export async function generateMetadata(
   };
 }
 
-// 🔁 ページ本体
+// ✅ ページ本体
 export default async function AuthorPage({
   params,
 }: {
@@ -84,4 +84,11 @@ export default async function AuthorPage({
       )}
     </main>
   );
+}
+
+// ✅ 追加！静的生成パス指定（エラーの元だった！）
+export async function generateStaticParams() {
+  return Object.values(authors).map((author) => ({
+    author: encodeURIComponent(author.slug),
+  }));
 }
