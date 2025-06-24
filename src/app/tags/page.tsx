@@ -1,10 +1,9 @@
-// src/app/tags/page.tsx（＝TagIndexPage）
 import { getAllPosts } from '@/lib/posts';
 import type { Post } from '@/types';
 import TagList from '@/components/TagList';
 
-export default function TagIndexPage() {
-  const posts: Post[] = getAllPosts();
+export default async function TagIndexPage() {
+  const posts: Post[] = await getAllPosts();
   const allTags = Array.from(
     new Set(posts.flatMap((post) => post.tags || []))
   );
@@ -16,3 +15,4 @@ export default function TagIndexPage() {
     </main>
   );
 }
+
