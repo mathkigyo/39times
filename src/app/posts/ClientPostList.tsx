@@ -73,27 +73,27 @@ export default function ClientPostList({ allPosts, popular }: Props) {
       <div className="flex gap-3 mt-4">
         <button
           className={`px-3 py-1 rounded border ${
-            sortMode === 'new' ? 'bg-black text-white' : 'bg-white text-blue-600'
+            sortMode === 'new' ? 'bg-black text-white' : 'bg-gray-200 text-black'
           }`}
           onClick={() => setSortMode('new')}
         >
-          🆕 新しい順
+           新しい順
         </button>
         <button
           className={`px-3 py-1 rounded border ${
-            sortMode === 'old' ? 'bg-black text-white' : 'bg-white text-blue-600'
+            sortMode === 'old' ? 'bg-black text-white' : 'bg-gray-200 text-black'
           }`}
           onClick={() => setSortMode('old')}
         >
-          📅 古い順
+           古い順
         </button>
         <button
           className={`px-3 py-1 rounded border ${
-            sortMode === 'popular' ? 'bg-black text-white' : 'bg-white text-blue-600'
+            sortMode === 'popular' ? 'bg-black text-white' : 'bg-gray-200 text-black'
           }`}
           onClick={() => setSortMode('popular')}
         >
-          🔥 人気の記事
+            人気の記事
         </button>
       </div>
 

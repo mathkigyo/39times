@@ -9,10 +9,10 @@ import type { Metadata } from 'next';
 export function generateMetadata(): Metadata {
   return {
     title: '39times - 受験生のための情報ブログ',
-    description: '受験生のリアルな声と勉強記録をまとめた受験ブログ。',
+    description: '大学生4人で運営中の受験生向けブログ。リアルな体験記や模試結果など、「本当に知りたい」情報をお届けします。',
     openGraph: {
       title: '39times - 受験生のための情報ブログ',
-      description: '受験生のリアルな声と勉強記録をまとめた受験ブログ。',
+      description: '大学生4人で運営中の受験生向けブログ。リアルな体験記や模試結果など、｢本当に知りたい｣情報をお届けします。',
       url: 'https://39times.com/',
       siteName: '39times',
       images: [
@@ -87,14 +87,14 @@ export default async function Home() {
         {recentPosts.length === 0 ? (
           <p className="text-gray-500">まだ記事がありません。</p>
         ) : (
-          <div className="bg-gray-50 p-4 rounded-md">
+          <div className="bg-white p-0 rounded-md  border divide-y">
             {recentPosts.map((post: Post) => (
-              <div key={post.slug}>
+              <div key={post.slug} className="hover:bg-gray-50 transition">
                 <Link
                   href={`/posts/${post.slug}`}
-                  className="block p-3 bg-white rounded shadow hover:bg-gray-100 transition"
+                  className="block px-4 py-3"
                 >
-                  <h3 className="text-base font-medium hover:underline text-black-700">{post.title}</h3>
+                  <h3 className="text-base font-bold hover:underline text-black-700">{post.title}</h3>
                   <p className="text-sm text-gray-500">{post.date}</p>
                 </Link>
               </div>
@@ -109,11 +109,11 @@ export default async function Home() {
         {popularPosts.length === 0 ? (
           <p className="text-gray-500">まだ人気記事はありません。</p>
         ) : (
-          <div className="bg-gray-50 p-4 rounded-md">
+          <div className="bg-white p-0 rounded-md border divide-y">
             {popularPosts.map((post) => (
-              <div key={post.slug} className="p-3 bg-white rounded shadow hover:bg-gray-100 transition">
-                <Link href={`/posts/${post.slug}`} className="block">
-                  <h3 className="text-base font-medium hover:underline text-black-700">{post.title}</h3>
+              <div key={post.slug} className="hover:bg-gray-50 transition">
+                <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
+                  <h3 className="text-base font-bold hover:underline text-black-700">{post.title}</h3>
                   <p className="text-sm text-gray-500">{post.views} views</p>
                 </Link>
               </div>
@@ -124,25 +124,31 @@ export default async function Home() {
 
       {/* 📄 プライバシーポリシー & お問い合わせ */}
       <footer className="pt-10 border-t mt-10 text-sm text-gray-500">
-        <ul className="space-y-2">
-          <li>
-            <Link href="/privacy-policy" className="hover:underline text-blue-600">
-              プライバシーポリシー
-            </Link>
-          </li>
-          <li>
-            <a
-              href="https://forms.gle/vHR81RECEp8R672Y9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline text-blue-600"
-            >
-              お問い合わせフォーム
-            </a>
-          </li>
-        </ul>
-        <p className="mt-4 text-xs">&copy; 2025 39times All rights reserved.</p>
-      </footer>
+  <ul className="space-y-2">
+    <li>
+      <Link href="/about" className="hover:underline text-blue-600">
+        運営情報
+      </Link>
+    </li>
+    <li>
+      <Link href="/privacy-policy" className="hover:underline text-blue-600">
+        プライバシーポリシー
+      </Link>
+    </li>
+    <li>
+      <a
+        href="https://forms.gle/vHR81RECEp8R672Y9"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:underline text-blue-600"
+      >
+        お問い合わせフォーム
+      </a>
+    </li>
+  </ul>
+  <p className="mt-4 text-xs">&copy; 2025 39times All rights reserved.</p>
+</footer>
+
     </main>
   );
 }
