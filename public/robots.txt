@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://39times.com
+
+# Sitemaps
+Sitemap: https://39times.com/sitemap.xml
