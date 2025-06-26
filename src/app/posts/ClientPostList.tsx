@@ -77,7 +77,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
           }`}
           onClick={() => setSortMode('new')}
         >
-          🆕 新着順
+          🆕 新しい順
         </button>
         <button
           className={`px-3 py-1 rounded border ${
@@ -93,7 +93,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
           }`}
           onClick={() => setSortMode('popular')}
         >
-          🔥 人気順
+          🔥 人気の記事
         </button>
       </div>
 
