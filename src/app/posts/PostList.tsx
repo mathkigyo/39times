@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 type Article = {
   slug: string;
@@ -11,21 +11,18 @@ type Article = {
 };
 
 export default function PostList({ articles }: { articles: Article[] }) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>(articles);
 
-  // 入力にマッチする候補を抽出（タイトル + タグ）
   const suggestions = Array.from(
     new Set(
-      articles.flatMap((article) => [
-        article.title,
-        ...(article.tags ?? []),
-      ])
+      articles.flatMap((article) => [article.title, ...(article.tags ?? [])])
     )
   ).filter((item) => item.toLowerCase().includes(input.toLowerCase()));
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       setShowSuggestions(false);
     }
   };
@@ -35,13 +32,15 @@ export default function PostList({ articles }: { articles: Article[] }) {
     setShowSuggestions(false);
   };
 
-  const filteredArticles = articles.filter((article) => {
+  useEffect(() => {
     const q = input.toLowerCase();
-    return (
-      article.title.toLowerCase().includes(q) ||
-      (article.tags ?? []).some((tag) => tag.toLowerCase().includes(q))
+    const filtered = articles.filter(
+      (article) =>
+        article.title.toLowerCase().includes(q) ||
+        (article.tags ?? []).some((tag) => tag.toLowerCase().includes(q))
     );
-  });
+    setFilteredArticles(filtered);
+  }, [input, articles]);
 
   return (
     <main className="p-8">
@@ -67,7 +66,7 @@ export default function PostList({ articles }: { articles: Article[] }) {
                 onClick={() => handleSuggestionClick(item)}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
               >
-                {item.startsWith("#") ? item : item}
+                {item}
               </li>
             ))}
           </ul>

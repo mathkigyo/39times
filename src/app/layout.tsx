@@ -1,4 +1,6 @@
 // src/app/layout.tsx
+
+
 import "./globals.css";
 import Navbar from "@/components/Navbar"; // ← 追加
 
@@ -21,3 +23,4 @@ export default function RootLayout({
     </html>
   );
 }
+
