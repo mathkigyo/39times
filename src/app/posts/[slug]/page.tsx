@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
+import breaks from "remark-breaks"; // ← 追加！
 import { getAllPosts } from "@/lib/posts";
 import ViewCounter from "@/components/ViewCounter";
 
@@ -23,7 +24,10 @@ export default async function PostPage({ params }: Params) {
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(fileContent);
 
-  const processedContent = await remark().use(html).process(content);
+  const processedContent = await remark()
+    .use(breaks) // ← 改行を有効にする
+    .use(html)
+    .process(content);
   const contentHtml = processedContent.toString();
 
   const allPosts = getAllPosts();
