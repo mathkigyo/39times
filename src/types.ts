@@ -3,6 +3,7 @@ export type Author = {
   name: string;
   bio: string;
   field: '文系' | '理系';
+  hensachi?: number; // ← 任意（載せる人だけでOK）
 };
 
 export type Post = {

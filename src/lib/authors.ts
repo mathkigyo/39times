@@ -1,11 +1,12 @@
 import type { Author } from '@/types';
 
 export const authors: Record<string, Author> = {
-  立教太郎: {
-    slug: '太郎',
-    name: '太郎',
+  'S.K': {
+    slug: 'S.K',
+    name: 'S.K',
     bio: '名古屋大学志望だった理系男子。物理と数学が得意。',
     field: '理系',
+    hensachi: 69,
   },
   おれ: {
     slug: 'おれ',

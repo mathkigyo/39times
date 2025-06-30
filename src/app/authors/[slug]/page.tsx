@@ -4,13 +4,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-// ✅ generateMetadata は async を完全に削除
 export function generateMetadata({
   params,
 }: {
-  params: { author: string };
+  params: { slug: string };
 }): Metadata {
-  const authorSlug = decodeURIComponent(params.author);
+  const authorSlug = decodeURIComponent(params.slug);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
   if (!authorData) {
@@ -34,13 +33,12 @@ export function generateMetadata({
   };
 }
 
-// ✅ ページ本体はそのままでOK（非同期でも大丈夫）
 export default async function AuthorPage({
   params,
 }: {
-  params: { author: string };
+  params: { slug: string };
 }) {
-  const authorSlug = decodeURIComponent(params.author);
+  const authorSlug = decodeURIComponent(params.slug);
   const authorData = Object.values(authors).find((a) => a.slug === authorSlug);
 
   if (!authorData) return notFound();
@@ -88,11 +86,10 @@ export default async function AuthorPage({
   );
 }
 
-// ✅ generateStaticParams は async のままでOK
 export async function generateStaticParams(): Promise<
-  { author: string }[]
+  { slug: string }[]
 > {
   return Object.values(authors).map((author) => ({
-    author: encodeURIComponent(author.slug),
+    slug: encodeURIComponent(author.slug),
   }));
 }

@@ -33,13 +33,16 @@ export default function AuthorsPage() {
             <li key={slug} className="border border-gray-300 rounded-lg p-4">
               <h2 className="text-xl font-semibold">
                 <Link
-                  href={`/authors/${slug}`}
+                  href={`/authors/${encodeURIComponent(slug)}`}
                   className="text-blue-600 hover:underline"
                 >
                   {author.name}
                 </Link>
               </h2>
-              <p className="text-sm text-gray-600">分類：{author.field}</p>
+              <p className="text-sm text-gray-600">文理：{author.field}</p>
+              {author.hensachi && (
+                <p className="text-sm text-gray-500">高校偏差値：{author.hensachi}</p>
+              )}
               <p className="text-sm text-gray-500">{author.bio}</p>
             </li>
           ))}

@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   verification: {
     google: "A3u0oVlr4tGp1yV0kCqvgapIaxiryLHS5EBSFSsswfI",
   },
+  icons: {
+    icon: "/favicon.ico", // ← ✅ ファビコンはここで指定する
+  },
 };
 
 export default function RootLayout({
@@ -19,10 +22,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <head>
-        {/* ✅ ファビコン追加 */}
-        <link rel="icon" href="/favicon.ico" />
-      </head>
       <body>
         <Navbar />
         <main className="max-w-3xl mx-auto px-4">{children}</main>
