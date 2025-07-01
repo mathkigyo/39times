@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
-import { Pencil, Clock, Book, Sparkles, Tags, Users } from 'lucide-react';
+import { Pencil, Clock, Book, Sparkles, List, Tags, Users } from 'lucide-react';
 import type { Post } from '@/types';
 import type { Metadata } from 'next';
 
@@ -72,18 +72,19 @@ export default async function Home() {
       {/* 📂 カテゴリ一覧 */}
       <section>
         <ul className="space-y-4">
-          <CategoryItem icon={<Pencil />} label="勉強ログ" href="/category/study-log" />
-          <CategoryItem icon={<Clock />} label="模試結果" href="/category/exam-results" />
-          <CategoryItem icon={<Book />} label="参考書レビュー" href="/category/book-reviews" />
           <CategoryItem icon={<Sparkles />} label="新着記事" href="/posts" />
+          <CategoryItem icon={<List />} label="記事一覧" href="/posts" />
           <CategoryItem icon={<Tags />} label="タグ一覧" href="/tags" />
           <CategoryItem icon={<Users />} label="投稿者一覧" href="/authors" />
+           <CategoryItem icon={<Pencil />} label="勉強法" href="/category/study-log" />
+          <CategoryItem icon={<Clock />} label="模試結果" href="/category/exam-results" />
+          <CategoryItem icon={<Book />} label="参考書レビュー" href="/category/book-reviews" />
         </ul>
       </section>
 
       {/* 🆕 新着記事 */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">New✨</h2>
+        <h2 className="text-xl font-semibold mb-4">-New-</h2>
         {recentPosts.length === 0 ? (
           <p className="text-gray-500">まだ記事がありません。</p>
         ) : (
@@ -105,7 +106,7 @@ export default async function Home() {
 
       {/* 🔥 Weekly Highlights */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">Weekly Highlights🔥</h2>
+        <h2 className="text-xl font-semibold mb-4">-Weekly Highlights-</h2>
         {popularPosts.length === 0 ? (
           <p className="text-gray-500">まだ人気記事はありません。</p>
         ) : (
