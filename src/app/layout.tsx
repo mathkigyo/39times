@@ -1,5 +1,3 @@
-// src/app/layout.tsx
-
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
@@ -11,7 +9,7 @@ export const metadata: Metadata = {
     google: "A3u0oVlr4tGp1yV0kCqvgapIaxiryLHS5EBSFSsswfI",
   },
   icons: {
-    icon: "/favicon.ico", // ← ✅ ファビコンはここで指定する
+    icon: "/favicon.ico", // ✅ ファビコン指定
   },
 };
 
@@ -22,6 +20,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
+      <head>
+        {/* ✅ Google AdSense 自動広告スクリプト */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1048972187942067"
+          crossOrigin="anonymous"
+        ></script>
+      </head>
       <body>
         <Navbar />
         <main className="max-w-3xl mx-auto px-4">{children}</main>
