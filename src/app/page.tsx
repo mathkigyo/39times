@@ -122,6 +122,30 @@ export default async function Home() {
           </div>
         )}
       </section>
+      {/* 🔥 All-Time Popular */}
+<section>
+  <h2 className="text-xl font-semibold mb-4">-All-Time Popular-</h2>
+  {postsWithViews.length === 0 ? (
+    <p className="text-gray-500">まだ人気記事はありません。</p>
+  ) : (
+    <div className="bg-white p-0 rounded-md border divide-y">
+      {postsWithViews
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 5)
+        .map((post) => (
+          <div key={post.slug} className="hover:bg-gray-50 transition">
+            <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
+              <h3 className="text-base font-bold hover:underline text-black-700">
+                {post.title}
+              </h3>
+              <p className="text-sm text-gray-500">{post.views} views</p>
+            </Link>
+          </div>
+        ))}
+    </div>
+  )}
+</section>
+
 
       {/* 📄 プライバシーポリシー & お問い合わせ */}
       <footer className="pt-10 border-t mt-10 text-sm text-gray-500">
