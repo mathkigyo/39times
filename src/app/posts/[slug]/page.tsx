@@ -3,7 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
-import breaks from "remark-breaks"; // ← 追加！
+import breaks from "remark-breaks"; // ← 改行対応
 import { getAllPosts } from "@/lib/posts";
 import ViewCounter from "@/components/ViewCounter";
 
@@ -25,7 +25,7 @@ export default async function PostPage({ params }: Params) {
   const { data, content } = matter(fileContent);
 
   const processedContent = await remark()
-    .use(breaks) // ← 改行を有効にする
+    .use(breaks)
     .use(html)
     .process(content);
   const contentHtml = processedContent.toString();
@@ -33,8 +33,7 @@ export default async function PostPage({ params }: Params) {
   const allPosts = getAllPosts();
   const relatedByTag = allPosts.filter(
     (post) =>
-      post.slug !== slug &&
-      post.tags?.some((tag) => data.tags?.includes(tag))
+      post.slug !== slug && post.tags?.some((tag) => data.tags?.includes(tag))
   );
   const relatedByAuthor = allPosts.filter(
     (post) => post.slug !== slug && post.author === data.author
@@ -60,7 +59,7 @@ export default async function PostPage({ params }: Params) {
       {/* PV表示＆カウント */}
       <ViewCounter slug={slug} />
 
-      {/* アイキャッチ画像（手動指定 or 自動） */}
+      {/* アイキャッチ画像 */}
       <img
         src={
           data.image ??
@@ -76,7 +75,7 @@ export default async function PostPage({ params }: Params) {
         className="w-full max-w-5xl h-48 sm:h-64 md:h-72 object-cover mx-auto rounded-lg mb-6"
       />
 
-      {/* タグ表示 */}
+      {/* タグ */}
       {data.tags && Array.isArray(data.tags) && data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {data.tags.map((tag: string) => (
@@ -95,6 +94,21 @@ export default async function PostPage({ params }: Params) {
         className="prose prose-neutral max-w-none"
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
+
+      {/* ✅ AdSense広告ユニット（記事下） */}
+      <div className="my-6">
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block", textAlign: "center" }}
+          data-ad-client="ca-pub-1048972187942067"
+          data-ad-slot="YOUR_SLOT_ID" // ← あなたのユニットIDに置き換えて！
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>
+          {`(adsbygoogle = window.adsbygoogle || []).push({});`}
+        </script>
+      </div>
 
       {/* 関連記事（タグ） */}
       {relatedByTag.length > 0 && (
