@@ -4,8 +4,8 @@ import { getWeeklyPopularSlugs } from '@/lib/popular';
 import { Pencil, Clock, Book, Sparkles, List, Tags, Users } from 'lucide-react';
 import type { Post } from '@/types';
 import type { Metadata } from 'next';
+import ViewCounter from '@/components/ViewCounter';
 
-// ✅ 修正済！asyncを外して、戻り値の型を明示
 export function generateMetadata(): Metadata {
   return {
     title: '39times - 受験生のための情報ブログ',
@@ -53,6 +53,9 @@ export default async function Home() {
 
   return (
     <main className="p-4 space-y-10">
+      {/* ✅ ホームページのPVカウント */}
+      <ViewCounter slug="/" />
+
       {/* 📘 メインビジュアル */}
       <section
         className="relative text-white rounded-xl px-6 py-6 overflow-hidden h-[145px] md:h-[220px] flex flex-col justify-center"
@@ -76,7 +79,7 @@ export default async function Home() {
           <CategoryItem icon={<List />} label="記事一覧" href="/posts" />
           <CategoryItem icon={<Tags />} label="タグ一覧" href="/tags" />
           <CategoryItem icon={<Users />} label="投稿者一覧" href="/authors" />
-           <CategoryItem icon={<Pencil />} label="勉強法" href="/category/study-log" />
+          <CategoryItem icon={<Pencil />} label="勉強法" href="/category/study-log" />
           <CategoryItem icon={<Clock />} label="模試結果" href="/category/exam-results" />
           <CategoryItem icon={<Book />} label="参考書レビュー" href="/category/book-reviews" />
         </ul>
@@ -88,13 +91,10 @@ export default async function Home() {
         {recentPosts.length === 0 ? (
           <p className="text-gray-500">まだ記事がありません。</p>
         ) : (
-          <div className="bg-white p-0 rounded-md  border divide-y">
+          <div className="bg-white p-0 rounded-md border divide-y">
             {recentPosts.map((post: Post) => (
               <div key={post.slug} className="hover:bg-gray-50 transition">
-                <Link
-                  href={`/posts/${post.slug}`}
-                  className="block px-4 py-3"
-                >
+                <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
                   <h3 className="text-base font-bold hover:underline text-black-700">{post.title}</h3>
                   <p className="text-sm text-gray-500">{post.date}</p>
                 </Link>
@@ -122,63 +122,61 @@ export default async function Home() {
           </div>
         )}
       </section>
-      {/* 🔥 All-Time Popular */}
-<section>
-  <h2 className="text-xl font-semibold mb-4">-All-Time Popular-</h2>
-  {postsWithViews.length === 0 ? (
-    <p className="text-gray-500">まだ人気記事はありません。</p>
-  ) : (
-    <div className="bg-white p-0 rounded-md border divide-y">
-      {postsWithViews
-        .sort((a, b) => b.views - a.views)
-        .slice(0, 5)
-        .map((post) => (
-          <div key={post.slug} className="hover:bg-gray-50 transition">
-            <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
-              <h3 className="text-base font-bold hover:underline text-black-700">
-                {post.title}
-              </h3>
-              <p className="text-sm text-gray-500">{post.views} views</p>
-            </Link>
-          </div>
-        ))}
-    </div>
-  )}
-</section>
 
+      {/* 🔥 All-Time Popular */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">-All-Time Popular-</h2>
+        {postsWithViews.length === 0 ? (
+          <p className="text-gray-500">まだ人気記事はありません。</p>
+        ) : (
+          <div className="bg-white p-0 rounded-md border divide-y">
+            {postsWithViews
+              .sort((a, b) => b.views - a.views)
+              .slice(0, 5)
+              .map((post) => (
+                <div key={post.slug} className="hover:bg-gray-50 transition">
+                  <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
+                    <h3 className="text-base font-bold hover:underline text-black-700">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-gray-500">{post.views} views</p>
+                  </Link>
+                </div>
+              ))}
+          </div>
+        )}
+      </section>
 
       {/* 📄 プライバシーポリシー & お問い合わせ */}
       <footer className="pt-10 border-t mt-10 text-sm text-gray-500">
-  <ul className="space-y-2">
-    <li>
-      <Link href="/about" className="hover:underline text-blue-600">
-        運営情報
-      </Link>
-    </li>
-    <li>
-      <Link href="/privacy-policy" className="hover:underline text-blue-600">
-        プライバシーポリシー
-      </Link>
-    </li>
-    <li>
-      <a
-        href="https://forms.gle/vHR81RECEp8R672Y9"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:underline text-blue-600"
-      >
-        お問い合わせフォーム
-      </a>
-    </li>
-  </ul>
-  <p className="mt-4 text-xs">&copy; 2025 39times All rights reserved.</p>
-</footer>
-
+        <ul className="space-y-2">
+          <li>
+            <Link href="/about" className="hover:underline text-blue-600">
+              運営情報
+            </Link>
+          </li>
+          <li>
+            <Link href="/privacy-policy" className="hover:underline text-blue-600">
+              プライバシーポリシー
+            </Link>
+          </li>
+          <li>
+            <a
+              href="https://forms.gle/vHR81RECEp8R672Y9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline text-blue-600"
+            >
+              お問い合わせフォーム
+            </a>
+          </li>
+        </ul>
+        <p className="mt-4 text-xs">&copy; 2025 39times All rights reserved.</p>
+      </footer>
     </main>
   );
 }
 
-// 🧩 カテゴリカード
 function CategoryItem({
   icon,
   label,
