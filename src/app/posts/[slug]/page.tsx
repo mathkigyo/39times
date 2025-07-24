@@ -1,11 +1,14 @@
+// src/app/posts/[slug]/page.tsx
+
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
-import breaks from "remark-breaks"; // ← 改行対応
+import breaks from "remark-breaks"; // 改行対応
 import { getAllPosts } from "@/lib/posts";
 import ViewCounter from "@/components/ViewCounter";
+import Script from "next/script"; // 追加：外部スクリプト用
 
 type Params = {
   params: Promise<{ slug: string }>;
@@ -41,9 +44,10 @@ export default async function PostPage({ params }: Params) {
 
   return (
     <main className="p-8">
+      {/* 記事タイトル */}
       <h1 className="text-2xl font-bold mb-1">{data.title}</h1>
 
-      {/* 投稿日と投稿者名 */}
+      {/* 投稿日と投稿者 */}
       <div className="text-sm text-gray-500 mb-4 flex items-center gap-2">
         <span>
           📅{" "}
@@ -56,7 +60,7 @@ export default async function PostPage({ params }: Params) {
         <span>👤 {data.author}</span>
       </div>
 
-      {/* PV表示＆カウント */}
+      {/* PVカウンター */}
       <ViewCounter slug={slug} />
 
       {/* アイキャッチ画像 */}
@@ -75,7 +79,7 @@ export default async function PostPage({ params }: Params) {
         className="w-full max-w-5xl h-48 sm:h-64 md:h-72 object-cover mx-auto rounded-lg mb-6"
       />
 
-      {/* タグ */}
+      {/* タグ表示 */}
       {data.tags && Array.isArray(data.tags) && data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {data.tags.map((tag: string) => (
@@ -99,15 +103,12 @@ export default async function PostPage({ params }: Params) {
       <div className="my-6">
         <ins
           className="adsbygoogle"
-          style={{ display: "block", textAlign: "center" }}
+          style={{ display: "block" }}
           data-ad-client="ca-pub-1048972187942067"
-          data-ad-slot="YOUR_SLOT_ID" // ← あなたのユニットIDに置き換えて！
+          data-ad-slot="7407087779"
           data-ad-format="auto"
           data-full-width-responsive="true"
-        ></ins>
-        <script>
-          {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-        </script>
+        />
       </div>
 
       {/* 関連記事（タグ） */}
@@ -147,6 +148,21 @@ export default async function PostPage({ params }: Params) {
           </ul>
         </section>
       )}
+
+      {/* ✅ 広告スクリプト（非同期読み込み） */}
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1048972187942067"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+      <Script
+        id="adsbygoogle-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
+        }}
+      />
     </main>
   );
 }
