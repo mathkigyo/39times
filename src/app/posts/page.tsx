@@ -29,9 +29,8 @@ export default async function PostsPage() {
 
 // PostListコンポーネントのみをクライアントコンポーネントにする
 // このファイル内に記述することで、importエラーも解消される
-// クライアントコンポーネントなので、useStateやuseEffectが使用可能
 const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularData }) => {
-  'use client'; // 💡 ここに 'use client' を配置
+  'use client';
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -46,24 +45,30 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
 
   const filteredPosts = useMemo(() => {
     const q = query.toLowerCase();
-    return allPosts.filter((post) =>
+    // 💡 引数から型指定を削除
+    return allPosts.filter(post =>
       post.title.toLowerCase().includes(q) ||
       post.author?.toLowerCase().includes(q) ||
-      post.tags?.some((tag) => tag.toLowerCase().includes(q))
+      post.tags?.some(tag => tag.toLowerCase().includes(q))
     );
   }, [query, allPosts]);
 
   const sortedPosts = useMemo(() => {
-    const withViews = filteredPosts.map((post) => {
-      const pv = popular.find((p) => p.slug === post.slug);
+    // 💡 引数から型指定を削除
+    const withViews = filteredPosts.map(post => {
+      const pv = popular.find(p => p.slug === post.slug);
       return { ...post, views: pv?.count ?? 0 };
     });
 
     if (sortMode === 'new') {
+      // 💡 引数から型指定を削除
       return withViews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } else if (sortMode === 'old') {
+      // 💡 引数から型指定を削除
       return withViews.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     } else {
+      // 💡 不要になったので @ts-expect-error を削除
+      // 💡 引数から型指定を削除
       return withViews.sort((a, b) => b.views - a.views);
     }
   }, [filteredPosts, sortMode, popular]);
@@ -123,7 +128,8 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
         {sortedPosts.length === 0 ? (
           <p className="text-gray-500 mt-4">該当する記事が見つかりませんでした。</p>
         ) : (
-          sortedPosts.map((post) => (
+          // 💡 引数から型指定を削除
+          sortedPosts.map(post => (
             <li key={post.slug}>
               <Link href={`/posts/${post.slug}`} className="inline-block">
                 <h2 className="text-lg font-semibold text-black-600 hover:underline">
@@ -136,7 +142,7 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
               {post.excerpt && <p className="text-gray-700 mt-1">{post.excerpt}</p>}
               {post.tags && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {post.tags.map((tag) => (
+                  {post.tags.map(tag => (
                     <span
                       key={tag}
                       className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded"
