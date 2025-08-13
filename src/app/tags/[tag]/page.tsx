@@ -1,6 +1,8 @@
+// src/app/tags/[tag]/page.tsx
+
 import { Post } from '@/types';
 import { getAllPosts } from '@/lib/posts';
-import { getWeeklyPopularSlugs } from '@/lib/popular';
+import { getWeeklyPopularSlugs, PopularSlug } from '@/lib/popular';
 import { tags } from '@/lib/tags';
 import Link from 'next/link';
 
@@ -9,27 +11,32 @@ type TagPageProps = {
 };
 
 export default async function TagPage({ params }: TagPageProps) {
+  // URL エンコードされたタグ名をデコード
   const tag = decodeURIComponent(params.tag);
+
+  // 全記事と週間人気スラッグを取得
   const posts: Post[] = getAllPosts();
-  const popular = await getWeeklyPopularSlugs();
+  const popular: PopularSlug[] = await getWeeklyPopularSlugs();
 
-  const filtered = posts.filter((post) =>
-    post.tags?.includes(tag)
-  );
+  // このタグを持つ記事だけ抽出
+  const filtered = posts.filter((post) => post.tags?.includes(tag));
 
+  // 各記事に views をマージ
   const taggedWithViews: (Post & { views: number })[] = filtered.map((post) => {
     const pv = popular.find((p) => p.slug === post.slug);
     return {
       ...post,
-      views: pv?.count ?? 0,
+      views: pv?.views ?? 0,    // ← ここを count ではなく views に
     };
   });
 
+  // views 順でソート
   const sortedPosts = taggedWithViews.sort((a, b) => b.views - a.views);
 
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold mb-4">タグ: {tag}</h1>
+
       {sortedPosts.length === 0 ? (
         <p className="text-gray-500">このタグの記事は見つかりませんでした。</p>
       ) : (
@@ -41,7 +48,9 @@ export default async function TagPage({ params }: TagPageProps) {
                   {post.title}
                 </div>
               </Link>
-              <div className="text-sm text-gray-500">{post.date}</div>
+              <div className="text-sm text-gray-500">
+                {post.date} ・ {post.views} views
+              </div>
             </li>
           ))}
         </ul>
@@ -50,7 +59,7 @@ export default async function TagPage({ params }: TagPageProps) {
   );
 }
 
-// ✅ 静的生成対象のパス（全タグ）を定義
+// 静的生成する全タグ一覧
 export async function generateStaticParams(): Promise<{ tag: string }[]> {
   return tags.map((tag) => ({
     tag: encodeURIComponent(tag.name),

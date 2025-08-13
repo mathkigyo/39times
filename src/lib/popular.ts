@@ -40,13 +40,22 @@ export async function getPostViews(slug: string): Promise<number> {
   return totalViews
 }
 
+/** 
+ * PopularSlug 型定義 
+ */
+export type PopularSlug = {
+  slug: string
+  views: number
+}
+
 /**
  * 🔹 週間人気記事（過去7日間のPV合計ランキング）
  */
-export async function getWeeklyPopularSlugs(): Promise<{ slug: string; count: number }[]> {
+export async function getWeeklyPopularSlugs(): Promise<PopularSlug[]> {
   const sevenDaysAgo = new Date()
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
 
+  // 過去7日分の全レコードを取得
   const { data, error } = await supabase
     .from('page_views')
     .select('slug, count, created_at')
@@ -57,21 +66,24 @@ export async function getWeeklyPopularSlugs(): Promise<{ slug: string; count: nu
     return []
   }
 
+  // slug ごとに count を集計
   const slugCountMap = new Map<string, number>()
   for (const row of data) {
     const current = slugCountMap.get(row.slug) ?? 0
     slugCountMap.set(row.slug, current + row.count)
   }
 
+  // count → views に変換し、降順ソート
   return Array.from(slugCountMap.entries())
-    .map(([slug, count]) => ({ slug, count }))
-    .sort((a, b) => b.count - a.count)
+    .map(([slug, count]) => ({ slug, views: count }))
+    .sort((a, b) => b.views - a.views)
 }
 
 /**
  * 🔹 今までの人気記事（全期間のPV合計ランキング）
  */
-export async function getAllTimePopularSlugs(): Promise<{ slug: string; count: number }[]> {
+export async function getAllTimePopularSlugs(): Promise<PopularSlug[]> {
+  // 全期間の全レコードを取得
   const { data, error } = await supabase
     .from('page_views')
     .select('slug, count')
@@ -81,13 +93,15 @@ export async function getAllTimePopularSlugs(): Promise<{ slug: string; count: n
     return []
   }
 
+  // slug ごとに count を集計
   const slugCountMap = new Map<string, number>()
   for (const row of data) {
     const current = slugCountMap.get(row.slug) ?? 0
     slugCountMap.set(row.slug, current + row.count)
   }
 
+  // count → views に変換し、降順ソート
   return Array.from(slugCountMap.entries())
-    .map(([slug, count]) => ({ slug, count }))
-    .sort((a, b) => b.count - a.count)
+    .map(([slug, count]) => ({ slug, views: count }))
+    .sort((a, b) => b.views - a.views)
 }

@@ -1,11 +1,13 @@
+// app/page.tsx
+
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/posts';
-import { getWeeklyPopularSlugs } from '@/lib/popular';
+import { getWeeklyPopularSlugs, getAllTimePopularSlugs } from '@/lib/popular';
 import { Pencil, Clock, Book, Sparkles, List, Tags, Users } from 'lucide-react';
 import type { Post } from '@/types';
 import type { Metadata } from 'next';
-import ViewCounter from '@/components/ViewCounter';
 
+// ✅ 修正済！asyncを外して、戻り値の型を明示
 export function generateMetadata(): Metadata {
   return {
     title: '39times - 受験生のための情報ブログ',
@@ -35,27 +37,46 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Home() {
+  // 全記事データを取得
   const posts: Post[] = getAllPosts();
-  const popular = await getWeeklyPopularSlugs();
 
+  // Weekly と All-Time の人気スラッグを並列フェッチ
+  const [weeklyPopular, allTimePopular] = await Promise.all([
+    getWeeklyPopularSlugs(),    // { slug: string; views: number }[]
+    getAllTimePopularSlugs(),   // { slug: string; views: number }[]
+  ]);
+
+  // 新着記事（最近5件）
   const recentPosts: Post[] = [...posts]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
-  const postsWithViews: (Post & { views: number })[] = posts.map((post) => {
-    const pv = popular.find((p) => p.slug === post.slug);
-    return { ...post, views: pv?.count ?? 0 };
-  });
+  // --- Weekly Highlights 用配列作成 ---
+  const weeklyPosts = weeklyPopular
+    .map((wp) => {
+      const post = posts.find((p) => p.slug === wp.slug);
+      return post
+        ? ({ ...post, views: wp.views } as Post & { views: number })
+        : null;
+    })
+    .filter((p): p is Post & { views: number } => p !== null)
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 5);
 
-  const popularPosts = postsWithViews
+  // --- All-Time Popular 用配列作成 ---
+  const allTimePosts = allTimePopular
+    .map((ap) => {
+      const post = posts.find((p) => p.slug === ap.slug);
+      return post
+        ? ({ ...post, views: ap.views } as Post & { views: number })
+        : null;
+    })
+    .filter((p): p is Post & { views: number } => p !== null)
     .sort((a, b) => b.views - a.views)
     .slice(0, 5);
 
   return (
     <main className="p-4 space-y-10">
-      {/* ✅ ホームページのPVカウント */}
-      <ViewCounter slug="/" />
-
       {/* 📘 メインビジュアル */}
       <section
         className="relative text-white rounded-xl px-6 py-6 overflow-hidden h-[145px] md:h-[220px] flex flex-col justify-center"
@@ -92,7 +113,7 @@ export default async function Home() {
           <p className="text-gray-500">まだ記事がありません。</p>
         ) : (
           <div className="bg-white p-0 rounded-md border divide-y">
-            {recentPosts.map((post: Post) => (
+            {recentPosts.map((post) => (
               <div key={post.slug} className="hover:bg-gray-50 transition">
                 <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
                   <h3 className="text-base font-bold hover:underline text-black-700">{post.title}</h3>
@@ -107,11 +128,11 @@ export default async function Home() {
       {/* 🔥 Weekly Highlights */}
       <section>
         <h2 className="text-xl font-semibold mb-4">-Weekly Highlights-</h2>
-        {popularPosts.length === 0 ? (
+        {weeklyPosts.length === 0 ? (
           <p className="text-gray-500">まだ人気記事はありません。</p>
         ) : (
           <div className="bg-white p-0 rounded-md border divide-y">
-            {popularPosts.map((post) => (
+            {weeklyPosts.map((post) => (
               <div key={post.slug} className="hover:bg-gray-50 transition">
                 <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
                   <h3 className="text-base font-bold hover:underline text-black-700">{post.title}</h3>
@@ -126,23 +147,20 @@ export default async function Home() {
       {/* 🔥 All-Time Popular */}
       <section>
         <h2 className="text-xl font-semibold mb-4">-All-Time Popular-</h2>
-        {postsWithViews.length === 0 ? (
+        {allTimePosts.length === 0 ? (
           <p className="text-gray-500">まだ人気記事はありません。</p>
         ) : (
           <div className="bg-white p-0 rounded-md border divide-y">
-            {postsWithViews
-              .sort((a, b) => b.views - a.views)
-              .slice(0, 5)
-              .map((post) => (
-                <div key={post.slug} className="hover:bg-gray-50 transition">
-                  <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
-                    <h3 className="text-base font-bold hover:underline text-black-700">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm text-gray-500">{post.views} views</p>
-                  </Link>
-                </div>
-              ))}
+            {allTimePosts.map((post) => (
+              <div key={post.slug} className="hover:bg-gray-50 transition">
+                <Link href={`/posts/${post.slug}`} className="block px-4 py-3">
+                  <h3 className="text-base font-bold hover:underline text-black-700">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-gray-500">{post.views} views</p>
+                </Link>
+              </div>
+            ))}
           </div>
         )}
       </section>
@@ -177,6 +195,7 @@ export default async function Home() {
   );
 }
 
+// 🧩 カテゴリカード
 function CategoryItem({
   icon,
   label,
