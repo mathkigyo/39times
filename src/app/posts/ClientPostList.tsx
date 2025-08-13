@@ -77,7 +77,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
           }`}
           onClick={() => setSortMode('new')}
         >
-           新しい順
+          新しい順
         </button>
         <button
           className={`px-3 py-1 rounded border ${
@@ -85,7 +85,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
           }`}
           onClick={() => setSortMode('old')}
         >
-           古い順
+          古い順
         </button>
         <button
           className={`px-3 py-1 rounded border ${
@@ -93,7 +93,7 @@ export default function ClientPostList({ allPosts, popular }: Props) {
           }`}
           onClick={() => setSortMode('popular')}
         >
-            人気の記事
+          人気順
         </button>
       </div>
 
@@ -109,7 +109,10 @@ export default function ClientPostList({ allPosts, popular }: Props) {
                   {post.title}
                 </h2>
               </Link>
-              <p className="text-sm text-gray-500">{post.date}</p>
+              {/* 💡 修正箇所: ここにPV表示を追加 */}
+              <p className="text-sm text-gray-500">
+                {post.date} ・ {post.views} views
+              </p>
               {post.excerpt && <p className="text-gray-700 mt-1">{post.excerpt}</p>}
               {post.tags && (
                 <div className="flex flex-wrap gap-2 mt-2">
