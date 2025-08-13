@@ -1,16 +1,15 @@
-import { Suspense, useState, useMemo, useEffect } from 'react';
+import { Suspense } from 'react';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
 import { Post } from '@/types';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
 
 // popularの型を定義
 type PopularData = { slug: string; count: number }[];
 
 // このコンポーネントはサーバーサイドで実行されるため、'use client' は不要
+// ここではデータ取得のみを行う
 export default async function PostsPage() {
-  // サーバーサイドでデータを取得
   const allPosts = getAllPosts();
   const popular = await getWeeklyPopularSlugs();
   
@@ -21,16 +20,19 @@ export default async function PostsPage() {
 
   return (
     <Suspense fallback={<div>読み込み中...</div>}>
-      {/* データをpropsとしてPostListに渡す */}
+      {/* データをpropsとしてPostListに渡し、クライアント側でインタラクションを処理する */}
       <PostList allPosts={allPosts} popular={popularWithCount} />
     </Suspense>
   );
 }
 
-// PostListコンポーネントのみをクライアントコンポーネントにする
-// このファイル内に記述することで、importエラーも解消される
+// ここから下がクライアントコンポーネント
+// 必要なHooksはここでインポートする
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+
 const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularData }) => {
-  'use client';
+  'use client'; // 💡 PostListコンポーネントの内部で'use client'を宣言
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -45,7 +47,6 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
 
   const filteredPosts = useMemo(() => {
     const q = query.toLowerCase();
-    // 💡 引数から型指定を削除
     return allPosts.filter(post =>
       post.title.toLowerCase().includes(q) ||
       post.author?.toLowerCase().includes(q) ||
@@ -54,22 +55,17 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
   }, [query, allPosts]);
 
   const sortedPosts = useMemo(() => {
-    // 💡 引数から型指定を削除
     const withViews = filteredPosts.map(post => {
       const pv = popular.find(p => p.slug === post.slug);
       return { ...post, views: pv?.count ?? 0 };
     });
 
     if (sortMode === 'new') {
-      // 💡 引数から型指定を削除
       return withViews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } else if (sortMode === 'old') {
-      // 💡 引数から型指定を削除
       return withViews.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     } else {
-      // 💡 不要になったので @ts-expect-error を削除
-      // 💡 引数から型指定を削除
-      return withViews.sort((a, b) => b.views - a.views);
+      return withViews.sort((a, b) => (b.views || 0) - (a.views || 0));
     }
   }, [filteredPosts, sortMode, popular]);
 
@@ -128,7 +124,6 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
         {sortedPosts.length === 0 ? (
           <p className="text-gray-500 mt-4">該当する記事が見つかりませんでした。</p>
         ) : (
-          // 💡 引数から型指定を削除
           sortedPosts.map(post => (
             <li key={post.slug}>
               <Link href={`/posts/${post.slug}`} className="inline-block">
