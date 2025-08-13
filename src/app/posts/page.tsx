@@ -1,16 +1,16 @@
-'use client';
-
 import { Suspense, useState, useMemo, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
-import type { Post } from '@/types';
+import { Post } from '@/types';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-// popularの型を、viewsではなくcountで受け取るように修正
+// popularの型を定義
 type PopularData = { slug: string; count: number }[];
 
+// このコンポーネントはサーバーサイドで実行されるため、'use client' は不要
 export default async function PostsPage() {
+  // サーバーサイドでデータを取得
   const allPosts = getAllPosts();
   const popular = await getWeeklyPopularSlugs();
   
@@ -21,13 +21,18 @@ export default async function PostsPage() {
 
   return (
     <Suspense fallback={<div>読み込み中...</div>}>
+      {/* データをpropsとしてPostListに渡す */}
       <PostList allPosts={allPosts} popular={popularWithCount} />
     </Suspense>
   );
 }
 
-// ClientPostListのロジックをPostListとしてこのファイルに統合
-function PostList({ allPosts, popular }: { allPosts: Post[], popular: PopularData }) {
+// PostListコンポーネントのみをクライアントコンポーネントにする
+// このファイル内に記述することで、importエラーも解消される
+// クライアントコンポーネントなので、useStateやuseEffectが使用可能
+const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularData }) => {
+  'use client'; // 💡 ここに 'use client' を配置
+
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -147,4 +152,4 @@ function PostList({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
       </ul>
     </main>
   );
-}
+};
