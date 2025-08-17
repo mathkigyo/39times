@@ -1,16 +1,14 @@
 import { Suspense } from 'react';
-import { getAllPosts } from '@/lib/posts'; // ここがサーバーサイドの関数
+import { getAllPosts } from '@/lib/posts';
 import { getWeeklyPopularSlugs } from '@/lib/popular';
-import type { Post } from '@/types';
+// type { Post } from '@/types'; // 💡 この行は不要なため削除
 import ClientPostList from './ClientPostList';
 
 // popularの型を定義
 type PopularData = { slug: string; count: number }[];
 
 // このコンポーネントはサーバーサイドで実行される
-// サーバーサイドでしか使えないfsモジュールを含む関数をここで呼び出す
 export default async function PostsPage() {
-  // `getAllPosts`はサーバーサイドで実行されるので、fsモジュールは問題なく動作する
   const allPosts = getAllPosts();
   const popular = await getWeeklyPopularSlugs();
   
