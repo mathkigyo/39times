@@ -1,46 +1,50 @@
-import { Suspense } from 'react';
-import { getAllPosts } from '@/lib/posts';
-import { getWeeklyPopularSlugs } from '@/lib/popular';
+'use client'; // ファイルの最上部に'use client'を配置
+
+import { useState, useMemo, useEffect } from 'react';
+import { getAllPosts } from '@/lib/posts'; // この関数はクライアント側でも使用可能
+import { getWeeklyPopularSlugs } from '@/lib/popular'; // 同上
 import { Post } from '@/types';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 // popularの型を定義
 type PopularData = { slug: string; count: number }[];
 
-// このコンポーネントはサーバーサイドで実行されるため、'use client' は不要
-// ここではデータ取得のみを行う
-export default async function PostsPage() {
-  const allPosts = getAllPosts();
-  const popular = await getWeeklyPopularSlugs();
-  
-  const popularWithCount: PopularData = popular.map(p => ({
-    slug: p.slug,
-    count: p.views
-  }));
-
-  return (
-    <Suspense fallback={<div>読み込み中...</div>}>
-      {/* データをpropsとしてPostListに渡し、クライアント側でインタラクションを処理する */}
-      <PostList allPosts={allPosts} popular={popularWithCount} />
-    </Suspense>
-  );
-}
-
-// ここから下がクライアントコンポーネント
-// 必要なHooksはここでインポートする
-import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-
-const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularData }) => {
-  'use client'; // 💡 PostListコンポーネントの内部で'use client'を宣言
-
+// このコンポーネント全体がクライアントコンポーネントとして動作する
+export default function PostsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [popular, setPopular] = useState<PopularData>([]);
   const [query, setQuery] = useState('');
   const [sortMode, setSortMode] = useState<'new' | 'old' | 'popular'>('new');
+  const [loading, setLoading] = useState(true);
 
+  // コンポーネントがマウントされた後にデータを取得する
   useEffect(() => {
+    async function fetchData() {
+      try {
+        // getAllPosts()は同期関数なのでそのまま呼び出す
+        const posts = getAllPosts();
+        setAllPosts(posts);
+
+        // getWeeklyPopularSlugs()は非同期関数なのでawaitで待つ
+        const popularData = await getWeeklyPopularSlugs();
+        const popularWithCount: PopularData = popularData.map(p => ({
+          slug: p.slug,
+          count: p.views
+        }));
+        setPopular(popularWithCount);
+      } catch (error) {
+        console.error('データの取得に失敗しました:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+
+    // URLの検索クエリを同期する
     const keyword = searchParams.get('keyword') ?? '';
     setQuery(keyword);
   }, [searchParams]);
@@ -68,6 +72,14 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
       return withViews.sort((a, b) => (b.views || 0) - (a.views || 0));
     }
   }, [filteredPosts, sortMode, popular]);
+
+  if (loading) {
+    return (
+      <main className="p-8 space-y-6">
+        <div>読み込み中...</div>
+      </main>
+    );
+  }
 
   return (
     <main className="p-8 space-y-6">
@@ -153,4 +165,4 @@ const PostList = ({ allPosts, popular }: { allPosts: Post[], popular: PopularDat
       </ul>
     </main>
   );
-};
+}
