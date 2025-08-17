@@ -1,7 +1,7 @@
 ---
 title: "私の受験"
 date: "2025-06-30"
-tags: ["タグ1", "タグ2"]
+tags: ["文系"]
 author: "りんご"
 category: 
 image: 

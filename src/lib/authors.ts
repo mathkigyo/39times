@@ -29,10 +29,58 @@ export const authors: Record<string, Author> = {
     field: '理系',
     hensachi: 74,
   },
-  あなた: {
+  'あなた': {
     slug: 'あなた',
     name: 'あなた',
     bio: '最強のエンジニア志望。C言語とPythonに挑戦中。',
+    field: '理系',
+  },
+  '得意料理は卵焼き': {
+    slug: '得意料理は卵焼き',
+    name: '得意料理は卵焼き',
+    bio: '未記入',
+    field: '理系',
+  },
+  'I.A': {
+    slug: 'I.A',
+    name: 'I.A',
+    bio: '未記入',
+    field: '文系',
+  },
+  'ws': {
+    slug: 'ws',
+    name: 'ws',
+    bio: '未記入',
+    field: '文系',
+  },
+  'ゆで卵': {
+    slug: 'ゆで卵',
+    name: 'ゆで卵',
+    bio: '未記入',
+    field: '文系',
+  },
+  'yuk': {
+    slug: 'yuk',
+    name: 'yuk',
+    bio: '未記入',
+    field: '理系',
+  },
+  'りんご': {
+    slug: 'りんご',
+    name: 'りんご',
+    bio: 'コツコツ勉強できる努力家。',
+    field: '文系',
+  },
+  'たまごぼーろ': {
+    slug: 'たまごぼーろ',
+    name: 'たまごぼーろ',
+    bio: '中高と吹奏楽部に所属。その経験をもとに音楽の道を進む。',
+    field: '文系',
+  },
+  'しろたん': {
+    slug: 'しろたん',
+    name: 'しろたん',
+    bio: '高校生活を部活にそそぐ一方学業も維持。文武両道の生活を送る。',
     field: '理系',
   },
 };
